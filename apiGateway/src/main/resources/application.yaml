@@ -1,0 +1,9 @@
+server:
+  port: 8081
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        -id: posts-route
+        uri: ${POSTS_ROUTE_URI:https://localhost:8081}
