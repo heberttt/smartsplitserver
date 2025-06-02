@@ -9,4 +9,6 @@ public class RegisterResult {
 
     private String message;
 
+    private int statusCode;
+
 }

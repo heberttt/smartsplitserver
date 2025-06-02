@@ -8,6 +8,8 @@ import com.smartsplit.accountservice.DTO.RegisterDTO;
 import com.smartsplit.accountservice.Results.RegisterResult;
 import com.smartsplit.accountservice.Service.AccountService;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +27,7 @@ public class AccountControllerImpl implements AccountController{
     }
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterResult> register(@RequestBody RegisterDTO dto) {
+    public ResponseEntity<RegisterResult> register(@Valid @RequestBody RegisterDTO dto) {
         RegisterResult result = accountService.register(dto);
 
         if (result.getSuccess()){

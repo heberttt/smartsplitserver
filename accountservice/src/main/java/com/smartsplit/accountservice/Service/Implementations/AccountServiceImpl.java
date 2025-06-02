@@ -1,5 +1,6 @@
 package com.smartsplit.accountservice.Service.Implementations;
 
+import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,27 +24,34 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public RegisterResult register(RegisterDTO dto) {
-        AccountDO newAccount = new AccountDO();
-        newAccount.setUsername(dto.getUsername());
-        newAccount.setEmail(dto.getEmail());
-        newAccount.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
-        newAccount.setSignedInWithGoogle(dto.getSignedInWithGoogle());
-        
+
         RegisterResult result = new RegisterResult();
 
+
         try {
+            AccountDO newAccount = new AccountDO();
+            newAccount.setUsername(dto.getUsername());
+            newAccount.setEmail(dto.getEmail());
+            newAccount.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
+            newAccount.setSignedInWithGoogle(dto.getSignedInWithGoogle());
+
+
             if (accountRepository.findByEmail(dto.getEmail()).isPresent()){
                 throw new DuplicateEmailException("Email already registered");
             }
+
             accountRepository.save(newAccount);
             result.setSuccess(true);
             result.setMessage("Account created successfully");
+            result.setStatusCode(201);
         } catch(DuplicateEmailException e){
             result.setSuccess(false);
             result.setMessage(e.getMessage());
+            result.setStatusCode(409);
         } catch (Exception e) {
             result.setSuccess(false);
             result.setMessage(e.getMessage());
+            result.setStatusCode(500);
         }
 
         return result;
