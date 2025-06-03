@@ -1,0 +1,9 @@
+services:
+  # postgres:
+  #   image: 'postgres:latest'
+  #   environment:
+  #     - 'POSTGRES_DB=SmartSplitDB'
+  #     - 'POSTGRES_PASSWORD=${SmartSplitDB_PASSWORD}'
+  #     - 'POSTGRES_USER=SmartSplit'
+  #   ports:
+  #     - '5433:5432' # port on host 5433
