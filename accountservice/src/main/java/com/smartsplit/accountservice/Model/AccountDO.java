@@ -1,6 +1,5 @@
 package com.smartsplit.accountservice.Model;
 
-import jakarta.validation.constraints.Email;
 import lombok.Data;
 
 @Data
