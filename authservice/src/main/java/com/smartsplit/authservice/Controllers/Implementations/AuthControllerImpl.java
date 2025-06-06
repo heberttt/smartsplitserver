@@ -26,10 +26,6 @@ public class AuthControllerImpl implements AuthController{
     @PostMapping("/token")
     public ResponseEntity<JwtResult> getJwtToken(@RequestBody JwtRequestDTO dto){
         
-        System.out.println("h");
-
-        System.out.println("e");
-        
         JwtResult result = authService.getJwtToken(dto);
         
         return new ResponseEntity<>(result, HttpStatusCode.valueOf(result.getStatusCode()));
