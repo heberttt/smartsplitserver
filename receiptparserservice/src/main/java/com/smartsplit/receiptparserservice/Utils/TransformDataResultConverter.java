@@ -43,11 +43,22 @@ public class TransformDataResultConverter {
             }
         }
 
+        List<Integer> quantity = new ArrayList<>();
+
+        if (ocrJson.get("quantity").isJsonArray()){
+            JsonArray array = ocrJson.get("quantity").getAsJsonArray();
+            for (JsonElement e : array){
+                quantity.add(e.getAsInt());
+            }
+        }
+
+
 
         TransformDataDO result = new TransformDataDO();
         result.setTitle(ocrJson.get("title").toString());
         result.setItems(items);
         result.setPrices(prices);
+        result.setQuantity(quantity);
         result.setAdditionalChargesPercent(ocrJson.get("extra_charges").getAsDouble());
         result.setTotal(ocrJson.get("total_price").getAsDouble());
         result.setRoundingAdjustment(ocrJson.get("rounding_adj").getAsDouble());
