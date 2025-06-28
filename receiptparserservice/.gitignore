@@ -31,9 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-.env
-
-.venv/
-
-/FirebaseKey/

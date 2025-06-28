@@ -31,6 +31,20 @@ public class ApiGatewayApplication {
 						)
 						.uri("http://localhost:8082")
 				)
+				.route(r -> r.path("/dataProcess/**")
+						.filters(f -> f
+								.prefixPath("/api")
+								.addResponseHeader("X-Powered-By","SmartSplit Gateway Service")
+						)
+						.uri("http://localhost:8083")
+				)
+				.route(r -> r.path("/ocr/**")
+						.filters(f -> f
+								.prefixPath("/api")
+								.addResponseHeader("X-Powered-By","SmartSplit Gateway Service")
+						)
+						.uri("http://localhost:8000")
+				)
 				.build();
 	}
 
