@@ -10,7 +10,6 @@ public class TransformDataDO {
     private List<String> items;
     private List<Double> prices;
     private List<Integer> quantity;
-    private Double additionalChargesPercent;
-    private Double total;
+    private Integer additionalChargesPercent;
     private Double roundingAdjustment;
 }

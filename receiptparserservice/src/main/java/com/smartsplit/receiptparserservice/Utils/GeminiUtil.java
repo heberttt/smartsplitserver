@@ -18,7 +18,7 @@ import com.smartsplit.receiptparserservice.DTO.TransformDataDTO;
 @Component
 public class GeminiUtil {
     private String address = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + System.getenv("GOOGLE_API_KEY");
-    private String instruction = "You are a receipt assistant. Return data as structured JSON with [title: string, items: string[], prices(before additional charges): double[], quantity(per item: int[]), extra_charges (percent): double, rounding_adj: double, total_price : double]. do not include words in '()' in json keys. Fix possible item name errors if confident";
+    private String instruction = "You are a receipt assistant. Return data as structured JSON with [title: string, items: string[], prices(before additional charges): double[], quantity(per item: int[]), extra_charges (sum of tax & service charge if any) (total percent): int, rounding_adj: double]. items, prices and quantity length must match. do not include words in '()' in json keys. Fix possible item name errors if confident";
 
     public String callApi(TransformDataDTO dto) throws IOException, InterruptedException, URISyntaxException{
 
