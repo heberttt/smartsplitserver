@@ -59,8 +59,7 @@ public class TransformDataResultConverter {
         result.setItems(items);
         result.setPrices(prices);
         result.setQuantity(quantity);
-        result.setAdditionalChargesPercent(ocrJson.get("extra_charges").getAsDouble());
-        result.setTotal(ocrJson.get("total_price").getAsDouble());
+        result.setAdditionalChargesPercent(ocrJson.get("extra_charges").getAsInt());
         result.setRoundingAdjustment(ocrJson.get("rounding_adj").getAsDouble());
         
 
