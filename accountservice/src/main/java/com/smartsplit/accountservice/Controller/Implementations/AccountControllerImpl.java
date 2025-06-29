@@ -14,6 +14,8 @@ import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,7 +45,16 @@ public class AccountControllerImpl implements AccountController{
         return new ResponseEntity<>(result, HttpStatusCode.valueOf(result.getStatusCode()));
     }
     
-
+   @GetMapping("/me")
+    public String getUserEmail(@AuthenticationPrincipal Jwt jwt) {
+        jwt.getClaims().forEach((k, v) -> System.out.println(
+            k + ": " + v
+        ));
+        // Extract email from JWT claims
+        String email = jwt.getClaimAsString("email");
+        return "Email: " + email;
+    }
+    
     
 
 }
