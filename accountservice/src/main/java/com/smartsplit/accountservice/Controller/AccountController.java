@@ -1,10 +1,14 @@
 package com.smartsplit.accountservice.Controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.jwt.Jwt;
 
-import com.smartsplit.accountservice.DTO.RegisterDTO;
-import com.smartsplit.accountservice.Results.RegisterResult;
+import com.smartsplit.accountservice.Request.ChangeUsernameRequest;
+import com.smartsplit.accountservice.Result.ChangeUsernameResult;
+import com.smartsplit.accountservice.Result.LoginResult;
 
 public interface AccountController {
-    public ResponseEntity<RegisterResult> register(RegisterDTO dto);
+    public ResponseEntity<LoginResult> login(Jwt jwt);
+
+    public ResponseEntity<ChangeUsernameResult> changeUsername(ChangeUsernameRequest request, Jwt jwt);
 }

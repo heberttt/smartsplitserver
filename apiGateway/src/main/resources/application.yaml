@@ -7,3 +7,19 @@ server:
 #       routes:
 #         -id: posts-route
 #         uri: ${POSTS_ROUTE_URI:https://localhost:8081}
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://securetoken.google.com/smartsplit-87a0b
+          jwk-set-uri: https://www.googleapis.com/service_accounts/v1/jwk/securetoken%40system.gserviceaccount.com
+
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+        oauth2: DEBUG

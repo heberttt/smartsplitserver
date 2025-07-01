@@ -1,11 +1,13 @@
 package com.smartsplit.accountservice.Service;
 
-import com.smartsplit.accountservice.DTO.RegisterDTO;
-import com.smartsplit.accountservice.Results.GetAccountResult;
-import com.smartsplit.accountservice.Results.RegisterResult;
+import org.springframework.security.oauth2.jwt.Jwt;
+
+import com.smartsplit.accountservice.Request.ChangeUsernameRequest;
+import com.smartsplit.accountservice.Result.ChangeUsernameResult;
+import com.smartsplit.accountservice.Result.LoginResult;
 
 public interface AccountService {
-    public RegisterResult register(RegisterDTO dto);
+    public LoginResult login(Jwt jwt);
 
-    public GetAccountResult getAccountByEmail(String email);
+    public ChangeUsernameResult changeUsername(ChangeUsernameRequest request, Jwt jwt);
 }
