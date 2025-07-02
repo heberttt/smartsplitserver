@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.smartsplit.accountservice.DO.AccountDO;
 import com.smartsplit.accountservice.Repository.AccountRepository;
+import com.smartsplit.accountservice.Request.ChangeProfilePictureRequest;
 import com.smartsplit.accountservice.Request.ChangeUsernameRequest;
+import com.smartsplit.accountservice.Result.ChangeProfilePictureResult;
 import com.smartsplit.accountservice.Result.ChangeUsernameResult;
 import com.smartsplit.accountservice.Result.LoginResult;
 import com.smartsplit.accountservice.Service.AccountService;
@@ -85,6 +87,34 @@ public class AccountServiceImpl implements AccountService {
 
             if (!updatedAccount.get().getUsername().equals(request.getUsername())) {
                 throw new Exception("Update name error");
+            }
+
+            result.setSuccess(true);
+            result.setStatusCode(200);
+            result.setData(updatedAccount.get());
+            return result;
+
+        } catch (Exception e) {
+            result.setSuccess(false);
+            result.setStatusCode(500);
+            result.setErrorMessage(e.toString());
+            return result;
+        }
+    }
+
+    @Override
+    public ChangeProfilePictureResult changeProfilePicture(ChangeProfilePictureRequest request, Jwt jwt) {
+        ChangeProfilePictureResult result = new ChangeProfilePictureResult();
+
+        String id = jwt.getClaimAsString("user_id");
+
+        try {
+            accountRepository.changeProfilePicture(request.getProfilePictureLink(), id);
+
+            Optional<AccountDO> updatedAccount = accountRepository.findById(id);
+
+            if (updatedAccount.isEmpty()) {
+                throw new Exception("Updated account not found");
             }
 
             result.setSuccess(true);

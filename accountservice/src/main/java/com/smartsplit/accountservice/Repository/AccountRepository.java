@@ -18,4 +18,6 @@ public interface AccountRepository {
     public void save(AccountDO accountDO);
 
     public void changeUsername(String username, String id);
+
+    public void changeProfilePicture(String profilePicture, String id);
 }

@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.smartsplit.accountservice.Controller.AccountController;
+import com.smartsplit.accountservice.Request.ChangeProfilePictureRequest;
 import com.smartsplit.accountservice.Request.ChangeUsernameRequest;
+import com.smartsplit.accountservice.Result.ChangeProfilePictureResult;
 import com.smartsplit.accountservice.Result.ChangeUsernameResult;
 import com.smartsplit.accountservice.Result.LoginResult;
 import com.smartsplit.accountservice.Service.AccountService;
@@ -37,9 +39,16 @@ public class AccountControllerImpl implements AccountController {
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
-    @PutMapping()
+    @PutMapping("/username")
     public ResponseEntity<ChangeUsernameResult> changeUsername(@RequestBody ChangeUsernameRequest request, @AuthenticationPrincipal Jwt jwt) {
         final ChangeUsernameResult result = accountService.changeUsername(request, jwt);
+
+        return new ResponseEntity<>(result, HttpStatusCode.valueOf(result.getStatusCode()));
+    }
+
+    @PutMapping("/profilePictureLink")
+    public ResponseEntity<ChangeProfilePictureResult> changeProfilePicture(@RequestBody ChangeProfilePictureRequest request, @AuthenticationPrincipal Jwt jwt) {
+        final ChangeProfilePictureResult result = accountService.changeProfilePicture(request, jwt);
 
         return new ResponseEntity<>(result, HttpStatusCode.valueOf(result.getStatusCode()));
     }

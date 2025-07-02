@@ -65,5 +65,14 @@ public class AccountRepositoryImpl implements AccountRepository{
 
         Assert.state(updated == 1, "Row updated: " + updated);
     }
+
+    @Override
+    public void changeProfilePicture(String profilePictureLink, String id) {
+        int updated = jdbcClient.sql("UPDATE accounts SET profilePictureLink = ? WHERE id = ?")
+        .params(List.of(profilePictureLink, id))
+        .update();
+
+        Assert.state(updated == 1, "Row updated: " + updated);
+    }
     
 }
