@@ -15,4 +15,5 @@ public interface AccountController {
     public ResponseEntity<ChangeUsernameResult> changeUsername(ChangeUsernameRequest request, Jwt jwt);
 
     public ResponseEntity<ChangeProfilePictureResult> changeProfilePicture(ChangeProfilePictureRequest request, Jwt jwt);
+    
 }

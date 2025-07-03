@@ -24,6 +24,20 @@ public class ApiGatewayApplication {
 						)
 						.uri("http://localhost:8081")
 				)
+				.route(r -> r.path("/friendRequest/**")
+						.filters(f -> f
+							.prefixPath("/api")
+							.addResponseHeader("X-Powered-By","SmartSplit Gateway Service")
+						)
+						.uri("http://localhost:8081")
+				)
+				.route(r -> r.path("/friends/**")
+						.filters(f -> f
+							.prefixPath("/api")
+							.addResponseHeader("X-Powered-By","SmartSplit Gateway Service")
+						)
+						.uri("http://localhost:8081")
+				)
 				.route(r -> r.path("/auth/**")
 						.filters(f -> f
 								.prefixPath("/api")

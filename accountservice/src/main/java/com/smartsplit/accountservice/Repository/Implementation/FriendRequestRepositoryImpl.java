@@ -2,6 +2,7 @@ package com.smartsplit.accountservice.Repository.Implementation;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
 import com.smartsplit.accountservice.DO.AccountDO;
+import com.smartsplit.accountservice.DO.FriendRequestDO;
 import com.smartsplit.accountservice.Enum.FriendRequestStatusEnum;
 import com.smartsplit.accountservice.Repository.FriendRequestRepository;
 
@@ -22,8 +24,13 @@ public class FriendRequestRepositoryImpl implements FriendRequestRepository {
     }
 
     @Override
-    public void addFriendRequest(String initiatorId, String targetId) {
-        var updated = jdbcClient.sql("INSERT INTO friend_request(initiator_id, target_id, status) values(?, ?, ?, ?)")
+    public void createFriendRequest(String initiatorId, String targetId) {
+
+        System.out.println("initiatorId = " + initiatorId);
+        System.out.println("targetId = " + targetId);
+        System.out.println("status = " + FriendRequestStatusEnum.PENDING);
+
+        var updated = jdbcClient.sql("INSERT INTO friendship_request(initiator_id, target_id, status) values(?, ?, ?)")
                 .params(List.of(initiatorId, targetId, FriendRequestStatusEnum.PENDING.toString()))
                 .update();
 
@@ -31,8 +38,8 @@ public class FriendRequestRepositoryImpl implements FriendRequestRepository {
     }
 
     @Override
-    public void acceptFriendRequest(String id) {
-        int updated = jdbcClient.sql("UPDATE friend_request SET status = ? WHERE id = ?")
+    public void acceptFriendRequest(int id) {
+        int updated = jdbcClient.sql("UPDATE friendship_request SET status = ? WHERE id = ?")
                 .params(List.of(FriendRequestStatusEnum.ACCEPTED.toString(), id))
                 .update();
 
@@ -40,12 +47,31 @@ public class FriendRequestRepositoryImpl implements FriendRequestRepository {
     }
 
     @Override
-    public void rejectFriendRequest(String id) {
-        int updated = jdbcClient.sql("UPDATE friend_request SET status = ? WHERE id = ?")
+    public void rejectFriendRequest(int id) {
+        int updated = jdbcClient.sql("UPDATE friendship_request SET status = ? WHERE id = ?")
                 .params(List.of(FriendRequestStatusEnum.REJECTED.toString(), id))
                 .update();
 
-        Assert.state(updated == 1, "Row updated: " + updated);
+        String updateErrorMessage = "";
+
+        if (updated == 0){
+            updateErrorMessage = "Friend request does not exist";
+        }
+        else if (updated == 1){
+            
+        }else{
+            updateErrorMessage = "More than one row updated: " + updated;
+        }
+
+        Assert.state(updated == 1, updateErrorMessage);
+    }
+
+    @Override
+    public Optional<FriendRequestDO> findFriendRequestById(String id) {
+        return jdbcClient.sql("SELECT id, initiator_id, target_id, status FROM accounts WHERE id = :id")
+                .param("id", id)
+                .query(FriendRequestDO.class)
+                .optional();
     }
 
     @Override
@@ -64,21 +90,21 @@ public class FriendRequestRepositoryImpl implements FriendRequestRepository {
                                             """;
 
         return jdbcClient.sql(sql)
-            .param("targetId", userId)
-            .query((rs, rowNum) -> {
-                int requestId = rs.getInt("request_id");
+                .param("targetId", userId)
+                .query((rs, rowNum) -> {
+                    int requestId = rs.getInt("request_id");
 
-                AccountDO account = new AccountDO();
-                account.setId(rs.getString("initiator_id"));
-                account.setUsername(rs.getString("username"));
-                account.setEmail(rs.getString("email"));
-                account.setProfilePictureLink(rs.getString("profilePictureLink"));
+                    AccountDO account = new AccountDO();
+                    account.setId(rs.getString("initiator_id"));
+                    account.setUsername(rs.getString("username"));
+                    account.setEmail(rs.getString("email"));
+                    account.setProfilePictureLink(rs.getString("profilePictureLink"));
 
-                return Map.entry(requestId, account);
-            })
-            .list()
-            .stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                    return Map.entry(requestId, account);
+                })
+                .list()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
 }
