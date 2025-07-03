@@ -1,8 +1,24 @@
 -- DROP TABLE accounts;
-CREATE TABLE IF NOT EXISTS accounts (
-    id VARCHAR(50),
-    username VARCHAR(50) NOT NULL,
-    email VARCHAR(254) NOT NULL UNIQUE,
-    profilePictureLink VARCHAR(254) NOT NULL,
-    PRIMARY KEY (id)
-);
+-- CREATE TABLE IF NOT EXISTS accounts (
+--     id VARCHAR(50),
+--     username VARCHAR(50) NOT NULL,
+--     email VARCHAR(254) NOT NULL UNIQUE,
+--     profilePictureLink VARCHAR(254) NOT NULL,
+--     PRIMARY KEY (id)
+-- );
+
+-- CREATE TABLE friendships (
+--   account1_id VARCHAR(50) REFERENCES accounts(id),
+--   account2_id VARCHAR(50) REFERENCES accounts(id),
+--   created_at TIMESTAMP DEFAULT now(),
+--   PRIMARY KEY (account1_id, account2_id),
+--   CHECK (account1_id < account2_id)
+-- );
+
+-- CREATE TABLE friendship_request (
+--     id SERIAL PRIMARY KEY,
+--     initiator_id VARCHAR(50) REFERENCES accounts(id),
+--     target_id VARCHAR(50) REFERENCES accounts(id),
+--     status VARCHAR(50) NOT NULL,
+--     created_at TIMESTAMP DEFAULT now()
+-- );
