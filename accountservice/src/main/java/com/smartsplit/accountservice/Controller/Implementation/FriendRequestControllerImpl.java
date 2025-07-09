@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.smartsplit.accountservice.Controller.FriendRequestController;
+import com.smartsplit.accountservice.Request.CreateFriendRequestByEmailRequest;
 import com.smartsplit.accountservice.Request.CreateFriendRequestRequest;
 import com.smartsplit.accountservice.Request.RejectFriendRequestRequest;
 import com.smartsplit.accountservice.Result.CreateFriendRequestResult;
@@ -39,6 +40,13 @@ public class FriendRequestControllerImpl implements FriendRequestController{
     @PostMapping()
     public ResponseEntity<CreateFriendRequestResult> createFriendRequest(@RequestBody CreateFriendRequestRequest request, @AuthenticationPrincipal Jwt jwt) {
         final CreateFriendRequestResult result = friendRequestService.createFriendRequest(request, jwt);
+
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @PostMapping("/email")
+    public ResponseEntity<CreateFriendRequestResult> createFriendRequestByEmail(@RequestBody CreateFriendRequestByEmailRequest request, @AuthenticationPrincipal Jwt jwt) {
+        final CreateFriendRequestResult result = friendRequestService.createFriendRequestByEmail(request, jwt);
 
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }

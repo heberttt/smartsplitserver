@@ -2,6 +2,7 @@ package com.smartsplit.accountservice.Service;
 
 import org.springframework.security.oauth2.jwt.Jwt;
 
+import com.smartsplit.accountservice.Request.CreateFriendRequestByEmailRequest;
 import com.smartsplit.accountservice.Request.CreateFriendRequestRequest;
 import com.smartsplit.accountservice.Request.RejectFriendRequestRequest;
 import com.smartsplit.accountservice.Result.CreateFriendRequestResult;
@@ -14,4 +15,6 @@ public interface FriendRequestService {
     public CreateFriendRequestResult createFriendRequest(CreateFriendRequestRequest request, Jwt jwt);
 
     public RejectFriendRequestResult rejectFriendRequest(RejectFriendRequestRequest request ,Jwt jwt);
+
+    public CreateFriendRequestResult createFriendRequestByEmail(CreateFriendRequestByEmailRequest request, Jwt jwt);
 }

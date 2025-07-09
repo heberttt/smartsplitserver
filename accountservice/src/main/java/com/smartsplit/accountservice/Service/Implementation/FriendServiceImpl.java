@@ -69,14 +69,14 @@ public class FriendServiceImpl implements FriendService {
                     .findFirst();
 
             if (matchedEntry.isEmpty()) {
-                throw new Exception("No pending request from user: " + request.getTargetId());
+                throw new Exception("No pending request with the friend request id: " + request.getTargetId());
             }
 
             Integer friendRequestId = matchedEntry.get().getKey();
             AccountDO targetAccount = matchedEntry.get().getValue();
 
             if (targetAccount == null || friendRequestId == null) {
-                throw new Exception("There is no pending friend request by this user");
+                throw new Exception("There is no pending friend request by this friend request id");
             }
 
             if (friendRepository.findMyFriends(targetAccount.getId()).stream()
@@ -117,6 +117,8 @@ public class FriendServiceImpl implements FriendService {
             result.setSuccess(false);
             result.setStatusCode(500);
             result.setErrorMessage(e.toString());
+
+            System.out.println(e.toString());
             return result;
         }
     }

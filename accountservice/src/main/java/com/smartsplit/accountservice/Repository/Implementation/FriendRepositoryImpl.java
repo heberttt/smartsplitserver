@@ -47,8 +47,16 @@ public class FriendRepositoryImpl implements FriendRepository {
             throw new IllegalArgumentException("Cannot friend yourself");
         }
 
-        String account2 = friend1id.compareTo(friend2id) < 0 ? friend1id : friend2id;
-        String account1 = friend1id.compareTo(friend2id) < 0 ? friend2id : friend1id;
+        String account1, account2;
+        if (friend1id.toLowerCase().compareTo(friend2id.toLowerCase()) < 0) {
+            account1 = friend1id;
+            account2 = friend2id;
+        } else {
+            account1 = friend2id;
+            account2 = friend1id;
+        }
+        System.out.println("account 1: " + account1);
+        System.out.println("account 2: " + account2);
 
         int updated = jdbcClient.sql("""
                     INSERT INTO friendships (account1_id, account2_id)
@@ -69,9 +77,14 @@ public class FriendRepositoryImpl implements FriendRepository {
             throw new IllegalArgumentException("Cannot remove friendship with yourself");
         }
 
-        boolean isOrdered = friend1id.compareTo(friend2id) < 0;
-        String account2 = isOrdered ? friend1id : friend2id;
-        String account1 = isOrdered ? friend2id : friend1id;
+        String account1, account2;
+        if (friend1id.toLowerCase().compareTo(friend2id.toLowerCase()) < 0) {
+            account1 = friend1id;
+            account2 = friend2id;
+        } else {
+            account1 = friend2id;
+            account2 = friend1id;
+        }
 
         int deleted = jdbcClient.sql("""
                     DELETE FROM friendships
