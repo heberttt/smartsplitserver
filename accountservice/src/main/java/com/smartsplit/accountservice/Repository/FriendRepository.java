@@ -11,4 +11,6 @@ public interface FriendRepository {
     public void addFriend(String friend1ID, String friend2ID);
 
     public void removeFriend(String friend1ID, String friend2ID);
+
+    public boolean checkIfFriend(String friend1ID, String friend2ID);
 }

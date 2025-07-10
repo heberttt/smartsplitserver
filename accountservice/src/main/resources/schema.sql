@@ -22,3 +22,18 @@
 --     status VARCHAR(50) NOT NULL,
 --     created_at TIMESTAMP DEFAULT now()
 -- );
+
+-- CREATE TABLE groups (
+--     id SERIAL PRIMARY KEY,
+--     name VARCHAR(100) NOT NULL,
+--     description TEXT,
+--     created_at TIMESTAMP DEFAULT now()
+-- );
+
+-- CREATE TABLE group_members (
+--     group_id INTEGER REFERENCES groups(id) ON DELETE CASCADE,
+--     account_id VARCHAR(50) REFERENCES accounts(id) ON DELETE CASCADE,
+--     joined_at TIMESTAMP DEFAULT now(),
+--     role VARCHAR(50) DEFAULT 'MEMBER',
+--     PRIMARY KEY (group_id, account_id)
+-- );

@@ -99,4 +99,32 @@ public class FriendRepositoryImpl implements FriendRepository {
         }
     }
 
+    @Override
+    public boolean checkIfFriend(String friend1id, String friend2id) {
+        if (friend1id.equals(friend2id)) {
+            return false;
+        }
+
+        String account1, account2;
+        if (friend1id.toLowerCase().compareTo(friend2id.toLowerCase()) < 0) {
+            account1 = friend1id;
+            account2 = friend2id;
+        } else {
+            account1 = friend2id;
+            account2 = friend1id;
+        }
+
+        List<Integer> results = jdbcClient.sql("""
+                    SELECT COUNT(*) AS count
+                    FROM friendships
+                    WHERE account1_id = :account1 AND account2_id = :account2
+                """)
+                .param("account1", account1)
+                .param("account2", account2)
+                .query((rs, rowNum) -> rs.getInt("count"))
+                .list();
+
+        return !results.isEmpty() && results.get(0) > 0;
+    }
+
 }
