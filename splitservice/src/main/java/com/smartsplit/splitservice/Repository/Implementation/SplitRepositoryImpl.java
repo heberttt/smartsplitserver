@@ -9,6 +9,7 @@ import com.smartsplit.splitservice.Model.ReceiptWithId;
 import com.smartsplit.splitservice.Repository.SplitRepository;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,14 +66,21 @@ public class SplitRepositoryImpl implements SplitRepository {
                     String accountId = friend.getId();
                     String guestName = friend.getUsername();
 
+                    boolean isPaid = payerId.equals(accountId);
+
+                    LocalDateTime paidAt = isPaid ? receipt.getNow() : null;
+
+
                     participantId = jdbcClient.sql("""
-                                INSERT INTO split_participants (bill_id, account_id, guest_name)
-                                VALUES (:billId, :accountId, :guestName)
+                                INSERT INTO split_participants (bill_id, account_id, guest_name, is_paid, paid_at)
+                                VALUES (:billId, :accountId, :guestName, :isPaid, :paidAt)
                                 RETURNING id
                             """)
                             .param("billId", billId)
                             .param("accountId", accountId)
                             .param("guestName", guestName)
+                            .param("isPaid", isPaid)
+                            .param("paidAt", paidAt)
                             .query(Integer.class)
                             .single();
 
@@ -275,13 +283,18 @@ public class SplitRepositoryImpl implements SplitRepository {
             receipt.setSplits(itemSplits);
 
             List<Map<String, Object>> memberRows = jdbcClient.sql("""
-                        SELECT sp.id AS participant_id, sp.account_id, sp.guest_name, sp.is_paid, sp.payment_proof_link,
-                               COALESCE(SUM(ish.quantity_share * bi.price / bi.quantity), 0) AS total_debt
-                        FROM split_participants sp
-                        LEFT JOIN item_shares ish ON ish.participant_id = sp.id
-                        LEFT JOIN bill_items bi ON ish.bill_item_id = bi.id
-                        WHERE sp.bill_id = :billId
-                        GROUP BY sp.id, sp.account_id, sp.guest_name, sp.is_paid, sp.payment_proof_link
+                    SELECT sp.id AS participant_id,
+                           sp.account_id,
+                           sp.guest_name,
+                           sp.is_paid,
+                           sp.payment_proof_link,
+                           sp.paid_at,
+                           COALESCE(SUM(ish.quantity_share * bi.price / bi.quantity), 0) AS total_debt
+                    FROM split_participants sp
+                    LEFT JOIN item_shares ish ON ish.participant_id = sp.id
+                    LEFT JOIN bill_items bi ON ish.bill_item_id = bi.id
+                    WHERE sp.bill_id = :billId
+                    GROUP BY sp.id, sp.account_id, sp.guest_name, sp.is_paid, sp.payment_proof_link, sp.paid_at
                     """)
                     .param("billId", billId)
                     .query()
@@ -298,6 +311,7 @@ public class SplitRepositoryImpl implements SplitRepository {
                 payment.setFriend(friend);
                 payment.setHasPaid((Boolean) memberRow.get("is_paid"));
                 payment.setPaymentImageLink((String) memberRow.get("payment_proof_link"));
+                payment.setPaidAt(((Timestamp) memberRow.get("paid_at")) != null ? ((Timestamp) memberRow.get("paid_at")).toLocalDateTime() : null);
                 payment.setTotalDebt(((Number) memberRow.get("total_debt")).intValue());
 
                 members.add(payment);
