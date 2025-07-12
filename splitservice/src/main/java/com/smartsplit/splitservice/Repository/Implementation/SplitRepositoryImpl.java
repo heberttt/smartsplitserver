@@ -27,12 +27,12 @@ public class SplitRepositoryImpl implements SplitRepository {
     @Override
     public void createSplitBill(String payerId, Receipt receipt) {
         Integer billId = jdbcClient.sql("""
-                    INSERT INTO bills (name, payer_id, extra_charges, rounding, created_at)
-                    VALUES (:name, :payerId, :extraCharges, :rounding, :createdAt)
+                    INSERT INTO bills (name, creator_id, extra_charges, rounding, created_at)
+                    VALUES (:name, :creatorId, :extraCharges, :rounding, :createdAt)
                     RETURNING id
                 """)
                 .param("name", receipt.getName())
-                .param("payerId", payerId)
+                .param("creatorId", payerId)
                 .param("extraCharges", receipt.getAdditionalChargesPercent())
                 .param("rounding", receipt.getRoundingAdjustment())
                 .param("createdAt", receipt.getNow())
@@ -93,9 +93,9 @@ public class SplitRepositoryImpl implements SplitRepository {
         List<Map<String, Object>> billRows = jdbcClient.sql("""
                     SELECT id, name, extra_charges, rounding, created_at
                     FROM bills
-                    WHERE payer_id = :payerId
+                    WHERE creator_id = :creatorId
                 """)
-                .param("payerId", payerId)
+                .param("creatorId", payerId)
                 .query()
                 .listOfRows();
 

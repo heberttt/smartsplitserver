@@ -1,7 +1,7 @@
 -- CREATE TABLE bills (
 --     id SERIAL PRIMARY KEY,
 --     name VARCHAR(100),
---     payer_id VARCHAR(50) NOT NULL,
+--     creator_id VARCHAR(50) NOT NULL,
 --     extra_charges DECIMAL,
 --     rounding DECIMAL,
 --     created_at TIMESTAMP DEFAULT now()
