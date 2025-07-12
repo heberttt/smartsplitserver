@@ -11,9 +11,13 @@ import org.springframework.http.ResponseEntity;
 
 import com.smartsplit.splitservice.Controller.SplitController;
 import com.smartsplit.splitservice.Request.CreateNewBillRequest;
+import com.smartsplit.splitservice.Request.DeleteBillRequest;
 import com.smartsplit.splitservice.Result.CreateNewBillResult;
+import com.smartsplit.splitservice.Result.DeleteBillResult;
 import com.smartsplit.splitservice.Result.GetMyBillsResult;
 import com.smartsplit.splitservice.Service.SplitService;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
@@ -37,6 +41,13 @@ public class SplitControllerImpl implements SplitController{
     @GetMapping()
     public ResponseEntity<GetMyBillsResult> getMyReceipts(@AuthenticationPrincipal Jwt jwt) {
         final GetMyBillsResult result = splitService.getMyBills(jwt);
+
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @DeleteMapping()
+    public ResponseEntity<DeleteBillResult> deleteBill(@RequestBody DeleteBillRequest request, @AuthenticationPrincipal Jwt jwt){
+        final DeleteBillResult result = splitService.deleteBill(request, jwt);
 
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
