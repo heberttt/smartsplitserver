@@ -4,7 +4,7 @@
 --     payer_id VARCHAR(50) NOT NULL,
 --     extra_charges DECIMAL,
 --     rounding DECIMAL,
---     created_at TIMESTAMP DEFAULT now(),
+--     created_at TIMESTAMP DEFAULT now()
 -- );
 
 -- CREATE TABLE bill_items (
@@ -20,7 +20,12 @@
 --     id SERIAL PRIMARY KEY,
 --     bill_id INTEGER REFERENCES bills(id) ON DELETE CASCADE,
 --     account_id VARCHAR(50),           
---     guest_name VARCHAR(100),          
+--     guest_name VARCHAR(100),
+
+--     is_paid BOOLEAN DEFAULT FALSE,   
+--     paid_at TIMESTAMP,                     
+--     payment_proof_link TEXT,                
+
 --     CHECK (
 --         (account_id IS NOT NULL AND guest_name IS NULL) OR
 --         (account_id IS NULL AND guest_name IS NOT NULL)
