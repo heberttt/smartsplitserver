@@ -20,4 +20,6 @@ public interface AccountRepository {
     public void changeUsername(String username, String id);
 
     public void changeProfilePicture(String profilePicture, String id);
+
+    public List<AccountDO> findByIds(List<String> ids);
 }

@@ -1,5 +1,6 @@
 package com.smartsplit.accountservice.Repository.Implementation;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +26,19 @@ public class AccountRepositoryImpl implements AccountRepository{
             .query(AccountDO.class)
             .list();
     }
+
+    @Override
+    public List<AccountDO> findByIds(List<String> ids) {
+    if (ids == null || ids.isEmpty()) {
+        return Collections.emptyList();
+    }
+
+    return jdbcClient
+        .sql("SELECT id, username, email, profilePictureLink FROM accounts WHERE id IN (:ids)")
+        .param("ids", ids)
+        .query(AccountDO.class)
+        .list();
+}
 
     @Override
     public Optional<AccountDO> findById(String id) {

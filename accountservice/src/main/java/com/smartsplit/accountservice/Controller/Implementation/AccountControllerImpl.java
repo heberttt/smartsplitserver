@@ -11,14 +11,18 @@ import org.springframework.web.bind.annotation.RestController;
 import com.smartsplit.accountservice.Controller.AccountController;
 import com.smartsplit.accountservice.Request.ChangeProfilePictureRequest;
 import com.smartsplit.accountservice.Request.ChangeUsernameRequest;
+import com.smartsplit.accountservice.Request.GetAccountsRequest;
 import com.smartsplit.accountservice.Result.ChangeProfilePictureResult;
 import com.smartsplit.accountservice.Result.ChangeUsernameResult;
+import com.smartsplit.accountservice.Result.GetAccountsResult;
 import com.smartsplit.accountservice.Result.LoginResult;
 import com.smartsplit.accountservice.Service.AccountService;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 
 @RestController
@@ -51,6 +55,14 @@ public class AccountControllerImpl implements AccountController {
 
         return new ResponseEntity<>(result, HttpStatusCode.valueOf(result.getStatusCode()));
     }
+
+    @GetMapping("")
+    public ResponseEntity<GetAccountsResult> getAccountById(@RequestBody GetAccountsRequest request) {
+        final GetAccountsResult result = accountService.getAccountsById(request);
+
+        return new ResponseEntity<>(result, HttpStatusCode.valueOf(result.getStatusCode()));
+    }
+    
 
     // @Override
     // public ResponseEntity<GetAccountResult> getAccount(@RequestBody GetAccountRequest request,@AuthenticationPrincipal Jwt jwt) {

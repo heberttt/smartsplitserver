@@ -10,8 +10,10 @@ import com.smartsplit.accountservice.DO.AccountDO;
 import com.smartsplit.accountservice.Repository.AccountRepository;
 import com.smartsplit.accountservice.Request.ChangeProfilePictureRequest;
 import com.smartsplit.accountservice.Request.ChangeUsernameRequest;
+import com.smartsplit.accountservice.Request.GetAccountsRequest;
 import com.smartsplit.accountservice.Result.ChangeProfilePictureResult;
 import com.smartsplit.accountservice.Result.ChangeUsernameResult;
+import com.smartsplit.accountservice.Result.GetAccountsResult;
 import com.smartsplit.accountservice.Result.LoginResult;
 import com.smartsplit.accountservice.Service.AccountService;
 
@@ -22,6 +24,27 @@ public class AccountServiceImpl implements AccountService {
 
     public AccountServiceImpl(AccountRepository repository) {
         this.accountRepository = repository;
+    }
+
+    @Override
+    public GetAccountsResult getAccountsById(GetAccountsRequest request){
+        GetAccountsResult result = new GetAccountsResult();
+
+        try{
+            
+            final List<AccountDO> accounts = accountRepository.findByIds(request.getAccountIds());
+
+            result.setData(accounts);
+            result.setSuccess(true);
+            result.setStatusCode(200);
+
+            return result;
+        }catch(Exception e){
+            result.setSuccess(false);
+            result.setErrorMessage(e.toString());
+            result.setStatusCode(500);
+            return result;
+        }
     }
 
     @Override
