@@ -70,7 +70,6 @@ public class SplitRepositoryImpl implements SplitRepository {
 
                     LocalDateTime paidAt = isPaid ? receipt.getNow() : null;
 
-
                     participantId = jdbcClient.sql("""
                                 INSERT INTO split_participants (bill_id, account_id, guest_name, is_paid, paid_at)
                                 VALUES (:billId, :accountId, :guestName, :isPaid, :paidAt)
@@ -195,7 +194,13 @@ public class SplitRepositoryImpl implements SplitRepository {
 
             FriendPayment payment = new FriendPayment();
             payment.setFriend(friend);
-            payment.setTotalDebt(((Number) row.get("total_debt")).intValue());
+
+            int extraCharges = ((Number) billRow.get("extra_charges")).intValue();
+
+            double baseDebt = ((Number) row.get("total_debt")).doubleValue();
+            double finalDebt = baseDebt * (1 + (extraCharges / 100.0));
+
+            payment.setTotalDebt((int) Math.round(finalDebt));
             payment.setHasPaid((Boolean) row.get("is_paid"));
             payment.setPaymentImageLink((String) row.get("payment_proof_link"));
 
@@ -311,8 +316,16 @@ public class SplitRepositoryImpl implements SplitRepository {
                 payment.setFriend(friend);
                 payment.setHasPaid((Boolean) memberRow.get("is_paid"));
                 payment.setPaymentImageLink((String) memberRow.get("payment_proof_link"));
-                payment.setPaidAt(((Timestamp) memberRow.get("paid_at")) != null ? ((Timestamp) memberRow.get("paid_at")).toLocalDateTime() : null);
-                payment.setTotalDebt(((Number) memberRow.get("total_debt")).intValue());
+                payment.setPaidAt(((Timestamp) memberRow.get("paid_at")) != null
+                        ? ((Timestamp) memberRow.get("paid_at")).toLocalDateTime()
+                        : null);
+
+                int extraCharges = ((Number) billRow.get("extra_charges")).intValue();
+                int baseDebt = ((Number) memberRow.get("total_debt")).intValue();
+
+                int taxedDebt = (baseDebt * (100 + extraCharges)) / 100;
+
+                payment.setTotalDebt(taxedDebt);
 
                 members.add(payment);
             }

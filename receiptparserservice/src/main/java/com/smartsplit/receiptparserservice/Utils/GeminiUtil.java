@@ -21,7 +21,6 @@ public class GeminiUtil {
     private String instruction = "You are a receipt assistant. Return data as structured JSON with [title: string, items: string[], prices(before additional charges): double[], quantity(per item: int[]), extra_charges (sum of tax & service charge if any) (total percent): int, rounding_adj: double]. items, prices and quantity length must match. do not include words in '()' in json keys. Fix possible item name errors if confident";
 
     public String callApi(TransformDataDTO dto) throws IOException, InterruptedException, URISyntaxException{
-
         GeminiRequestBody body = new GeminiRequestBody(instruction, listToString(dto.getRec_texts()));
 
         Gson gson = new Gson();

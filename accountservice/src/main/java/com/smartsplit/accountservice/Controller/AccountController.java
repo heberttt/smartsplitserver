@@ -10,6 +10,8 @@ import com.smartsplit.accountservice.Result.ChangeUsernameResult;
 import com.smartsplit.accountservice.Result.LoginResult;
 
 public interface AccountController {
+    // public ResponseEntity<GetAccountResult> getAccount(Jwt jwt);
+    
     public ResponseEntity<LoginResult> login(Jwt jwt);
 
     public ResponseEntity<ChangeUsernameResult> changeUsername(ChangeUsernameRequest request, Jwt jwt);
