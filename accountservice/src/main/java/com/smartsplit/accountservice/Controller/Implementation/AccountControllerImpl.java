@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.smartsplit.accountservice.Controller.AccountController;
 import com.smartsplit.accountservice.Request.ChangeProfilePictureRequest;
 import com.smartsplit.accountservice.Request.ChangeUsernameRequest;
+import com.smartsplit.accountservice.Request.GetAccountsRequest;
 import com.smartsplit.accountservice.Result.ChangeProfilePictureResult;
 import com.smartsplit.accountservice.Result.ChangeUsernameResult;
+import com.smartsplit.accountservice.Result.GetAccountResult;
 import com.smartsplit.accountservice.Result.GetAccountsResult;
 import com.smartsplit.accountservice.Result.LoginResult;
 import com.smartsplit.accountservice.Service.AccountService;
@@ -58,11 +60,20 @@ public class AccountControllerImpl implements AccountController {
 
     
     @GetMapping("")
-    public ResponseEntity<GetAccountsResult> getAccountById(@RequestParam String id) {
-        final GetAccountsResult result = accountService.getAccountById(id);
+    public ResponseEntity<GetAccountResult> getAccountById(@RequestParam String id) {
+        final GetAccountResult result = accountService.getAccountById(id);
 
         return new ResponseEntity<>(result, HttpStatusCode.valueOf(result.getStatusCode()));
     }
+
+    @PostMapping("")
+    public ResponseEntity<GetAccountsResult> getAccountsById(@RequestBody GetAccountsRequest request) {
+        final GetAccountsResult result = accountService.getAccountsById(request);
+
+        return new ResponseEntity<>(result, HttpStatusCode.valueOf(result.getStatusCode()));
+    }
+    
+
     
 
     // @Override

@@ -8,7 +8,7 @@ import com.smartsplit.accountservice.Request.ChangeProfilePictureRequest;
 import com.smartsplit.accountservice.Request.ChangeUsernameRequest;
 import com.smartsplit.accountservice.Result.ChangeProfilePictureResult;
 import com.smartsplit.accountservice.Result.ChangeUsernameResult;
-import com.smartsplit.accountservice.Result.GetAccountsResult;
+import com.smartsplit.accountservice.Result.GetAccountResult;
 import com.smartsplit.accountservice.Result.LoginResult;
 
 public interface AccountController {
@@ -20,6 +20,6 @@ public interface AccountController {
 
     public ResponseEntity<ChangeProfilePictureResult> changeProfilePicture(ChangeProfilePictureRequest request, Jwt jwt);
 
-    public ResponseEntity<GetAccountsResult> getAccountById(@RequestParam String id);
+    public ResponseEntity<GetAccountResult> getAccountById(@RequestParam String id);
     
 }

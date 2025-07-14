@@ -5,6 +5,6 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class GetAccountRequest {
-    private List<String> account_id;
+public class GetAccountsRequest {
+    private List<String> accountIds;
 }
