@@ -356,4 +356,163 @@ public class SplitRepositoryImpl implements SplitRepository {
         }
     }
 
+    @Override
+    public List<ReceiptWithId> findReceiptsWhereUserIsParticipant(String accountId) {
+        List<Map<String, Object>> billRows = jdbcClient.sql("""
+                    SELECT DISTINCT b.id, b.name, b.extra_charges, b.rounding, b.created_at, b.creator_id
+                    FROM bills b
+                    JOIN split_participants sp ON b.id = sp.bill_id
+                    WHERE sp.account_id = :accountId AND b.creator_id != :accountId
+                """)
+                .param("accountId", accountId)
+                .query()
+                .listOfRows();
+
+        List<ReceiptWithId> receipts = new ArrayList<>();
+
+        for (Map<String, Object> billRow : billRows) {
+            int billId = (int) billRow.get("id");
+
+            Receipt receipt = new Receipt();
+            receipt.setName((String) billRow.get("name"));
+            receipt.setAdditionalChargesPercent(((Number) billRow.get("extra_charges")).intValue());
+            receipt.setRoundingAdjustment(((Number) billRow.get("rounding")).intValue());
+            receipt.setNow(((Timestamp) billRow.get("created_at")).toLocalDateTime());
+
+            // Fetch items
+            List<Map<String, Object>> itemRows = jdbcClient.sql("""
+                        SELECT id, item_name, quantity, price
+                        FROM bill_items
+                        WHERE bill_id = :billId
+                    """)
+                    .param("billId", billId)
+                    .query()
+                    .listOfRows();
+
+            List<ReceiptItemSplit> itemSplits = new ArrayList<>();
+
+            for (Map<String, Object> itemRow : itemRows) {
+                int billItemId = (int) itemRow.get("id");
+
+                ReceiptItemSplit itemSplit = new ReceiptItemSplit();
+                itemSplit.setItemName((String) itemRow.get("item_name"));
+                itemSplit.setQuantity(((Number) itemRow.get("quantity")).intValue());
+                itemSplit.setTotalPrice(((Number) itemRow.get("price")).intValue());
+
+                List<Map<String, Object>> shareRows = jdbcClient.sql("""
+                            SELECT sp.account_id, sp.guest_name, ish.quantity_share
+                            FROM item_shares ish
+                            JOIN split_participants sp ON ish.participant_id = sp.id
+                            WHERE ish.bill_item_id = :billItemId
+                        """)
+                        .param("billItemId", billItemId)
+                        .query()
+                        .listOfRows();
+
+                List<FriendSplit> friendSplits = new ArrayList<>();
+                for (Map<String, Object> shareRow : shareRows) {
+                    Friend friend = new Friend();
+                    friend.setId((String) shareRow.get("account_id"));
+                    friend.setUsername((String) shareRow.get("guest_name"));
+
+                    FriendSplit split = new FriendSplit();
+                    split.setFriend(friend);
+                    split.setQuantity(((Number) shareRow.get("quantity_share")).intValue());
+
+                    friendSplits.add(split);
+                }
+
+                itemSplit.setFriendSplits(friendSplits);
+                itemSplits.add(itemSplit);
+            }
+
+            receipt.setSplits(itemSplits);
+
+            List<Map<String, Object>> memberRows = jdbcClient.sql("""
+                        SELECT sp.id AS participant_id,
+                               sp.account_id,
+                               sp.guest_name,
+                               sp.is_paid,
+                               sp.payment_proof_link,
+                               sp.paid_at,
+                               COALESCE(SUM(ish.quantity_share * bi.price / bi.quantity), 0) AS total_debt
+                        FROM split_participants sp
+                        LEFT JOIN item_shares ish ON ish.participant_id = sp.id
+                        LEFT JOIN bill_items bi ON ish.bill_item_id = bi.id
+                        WHERE sp.bill_id = :billId
+                        GROUP BY sp.id, sp.account_id, sp.guest_name, sp.is_paid, sp.payment_proof_link, sp.paid_at
+                    """)
+                    .param("billId", billId)
+                    .query()
+                    .listOfRows();
+
+            List<FriendPayment> members = new ArrayList<>();
+            for (Map<String, Object> memberRow : memberRows) {
+                Friend friend = new Friend();
+                friend.setId((String) memberRow.get("account_id"));
+                friend.setUsername((String) memberRow.get("guest_name"));
+
+                FriendPayment payment = new FriendPayment();
+                payment.setFriend(friend);
+                payment.setHasPaid((Boolean) memberRow.get("is_paid"));
+                payment.setPaymentImageLink((String) memberRow.get("payment_proof_link"));
+                payment.setPaidAt(memberRow.get("paid_at") != null
+                        ? ((Timestamp) memberRow.get("paid_at")).toLocalDateTime()
+                        : null);
+
+                int extraCharges = ((Number) billRow.get("extra_charges")).intValue();
+                int baseDebt = ((Number) memberRow.get("total_debt")).intValue();
+                int taxedDebt = (baseDebt * (100 + extraCharges)) / 100;
+
+                payment.setTotalDebt(taxedDebt);
+
+                members.add(payment);
+            }
+
+            ReceiptWithId receiptWithId = new ReceiptWithId();
+            receiptWithId.setId(billId);
+            receiptWithId.setCreatorId((String) billRow.get("creator_id"));
+            receiptWithId.setReceipt(receipt);
+            receiptWithId.setMembers(members);
+
+            receipts.add(receiptWithId);
+        }
+
+        return receipts;
+
+    }
+
+    @Override
+    public void attachPayment(int billId, String payerId, String paymentImageLink) {
+        StringBuilder sql = new StringBuilder("""
+                    UPDATE split_participants
+                    SET is_paid = true,
+                        paid_at = NOW()
+                """);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("billId", billId);
+        params.put("payerId", payerId);
+
+        if (paymentImageLink != null) {
+            sql.append(", payment_proof_link = :paymentImageLink");
+            params.put("paymentImageLink", paymentImageLink);
+        }
+
+        sql.append("""
+                    WHERE bill_id = :billId
+                    AND account_id = :payerId
+                """);
+
+        int rowsAffected = jdbcClient
+                .sql(sql.toString())
+                .params(params)
+                .update();
+
+        if (rowsAffected == 0) {
+            throw new IllegalArgumentException(
+                    "No matching participant found for bill ID " + billId + " and account ID " + payerId);
+        }
+    }
+
 }

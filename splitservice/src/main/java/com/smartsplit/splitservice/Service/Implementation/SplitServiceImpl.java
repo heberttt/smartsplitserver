@@ -9,9 +9,12 @@ import com.smartsplit.splitservice.Model.ReceiptWithId;
 import com.smartsplit.splitservice.Repository.SplitRepository;
 import com.smartsplit.splitservice.Request.CreateNewBillRequest;
 import com.smartsplit.splitservice.Request.DeleteBillRequest;
+import com.smartsplit.splitservice.Request.PayMyDebtRequest;
 import com.smartsplit.splitservice.Result.CreateNewBillResult;
 import com.smartsplit.splitservice.Result.DeleteBillResult;
 import com.smartsplit.splitservice.Result.GetMyBillsResult;
+import com.smartsplit.splitservice.Result.GetMyDebtsResult;
+import com.smartsplit.splitservice.Result.PayMyDebtResult;
 import com.smartsplit.splitservice.Service.SplitService;
 
 @Service
@@ -90,6 +93,51 @@ public class SplitServiceImpl implements SplitService {
             result.setStatusCode(200);
             result.setSuccess(true);
             
+            return result;
+        } catch (Exception e) {
+            result.setSuccess(false);
+            result.setErrorMessage(e.toString());
+            result.setStatusCode(500);
+
+            return result;
+        }
+    }
+
+    @Override
+    public GetMyDebtsResult getMyDebts(Jwt jwt) {
+        String initiatorId = jwt.getClaimAsString("user_id");
+
+        GetMyDebtsResult result = new GetMyDebtsResult();
+
+        try{
+            final List<ReceiptWithId> myReceipts = splitRepository.findReceiptsWhereUserIsParticipant(initiatorId);
+
+            result.setSuccess(true);
+            result.setStatusCode(200);
+            result.setData(myReceipts);
+
+            return result;
+        }catch(Exception e){
+            result.setSuccess(false);
+            result.setErrorMessage(e.toString());
+            result.setStatusCode(500);
+
+            return result;
+        }
+    }
+
+    @Override
+    public PayMyDebtResult payMyDebt(PayMyDebtRequest request, Jwt jwt) {
+        String initiatorId = jwt.getClaimAsString("user_id");
+
+        PayMyDebtResult result = new PayMyDebtResult();
+
+        try {
+            splitRepository.attachPayment(request.getBillId(), initiatorId, request.getPaymentLink());
+
+            result.setSuccess(true);
+            result.setStatusCode(200);
+
             return result;
         } catch (Exception e) {
             result.setSuccess(false);

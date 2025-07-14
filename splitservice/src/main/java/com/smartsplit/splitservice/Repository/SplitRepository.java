@@ -13,4 +13,8 @@ public interface SplitRepository {
     public void deleteBill(int billId);
 
     public Optional<ReceiptWithId> findReceiptById(int billId);
+
+    public List<ReceiptWithId> findReceiptsWhereUserIsParticipant(String accountId);
+
+    public void attachPayment(int billId, String payerId, String paymentImageLink);
 }

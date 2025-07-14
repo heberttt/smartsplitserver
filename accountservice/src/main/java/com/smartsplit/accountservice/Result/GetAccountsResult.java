@@ -1,6 +1,5 @@
 package com.smartsplit.accountservice.Result;
 
-import java.util.List;
 
 import com.smartsplit.accountservice.DO.AccountDO;
 
@@ -14,5 +13,5 @@ public class GetAccountsResult {
 
     private String errorMessage;
 
-    private List<AccountDO> data;
+    private AccountDO data;
 }

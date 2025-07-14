@@ -6,12 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.smartsplit.accountservice.Controller.AccountController;
 import com.smartsplit.accountservice.Request.ChangeProfilePictureRequest;
 import com.smartsplit.accountservice.Request.ChangeUsernameRequest;
-import com.smartsplit.accountservice.Request.GetAccountsRequest;
 import com.smartsplit.accountservice.Result.ChangeProfilePictureResult;
 import com.smartsplit.accountservice.Result.ChangeUsernameResult;
 import com.smartsplit.accountservice.Result.GetAccountsResult;
@@ -56,9 +56,10 @@ public class AccountControllerImpl implements AccountController {
         return new ResponseEntity<>(result, HttpStatusCode.valueOf(result.getStatusCode()));
     }
 
+    
     @GetMapping("")
-    public ResponseEntity<GetAccountsResult> getAccountById(@RequestBody GetAccountsRequest request) {
-        final GetAccountsResult result = accountService.getAccountsById(request);
+    public ResponseEntity<GetAccountsResult> getAccountById(@RequestParam String id) {
+        final GetAccountsResult result = accountService.getAccountById(id);
 
         return new ResponseEntity<>(result, HttpStatusCode.valueOf(result.getStatusCode()));
     }
