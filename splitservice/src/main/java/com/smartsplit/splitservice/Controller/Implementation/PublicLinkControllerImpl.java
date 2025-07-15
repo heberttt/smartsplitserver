@@ -34,7 +34,7 @@ public class PublicLinkControllerImpl implements PublicLinkController{
     @PostMapping()
     public ResponseEntity<AttachPaymentPublicResult> attachPaymentPublic(@RequestParam("file") MultipartFile file, @RequestParam int billId, @RequestParam String token, @RequestParam String guestName){
         final AttachPaymentPublicResult result = splitService.attachPaymentPublic(file, billId, token, guestName);
-
+        System.out.println(guestName);
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
     
