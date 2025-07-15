@@ -4,8 +4,8 @@
 --     creator_id VARCHAR(50) NOT NULL,
 --     extra_charges DECIMAL,
 --     rounding DECIMAL,
---     created_at TIMESTAMP DEFAULT now()
--- );
+--     created_at TIMESTAMP DEFAULT now(),
+--     public_access_token VARCHAR(255))
 
 -- CREATE TABLE bill_items (
 --     id SERIAL PRIMARY KEY,

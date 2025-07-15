@@ -10,4 +10,5 @@ public class ReceiptWithId {
     private Receipt receipt;
     private String creatorId;
     private List<FriendPayment> members;
+    private String publicAccessToken;
 }

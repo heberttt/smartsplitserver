@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
@@ -30,16 +31,23 @@ public class SplitRepositoryImpl implements SplitRepository {
 
     @Override
     public void createSplitBill(String payerId, Receipt receipt) {
-        Integer billId = jdbcClient.sql("""
-                    INSERT INTO bills (name, creator_id, extra_charges, rounding, created_at)
-                    VALUES (:name, :creatorId, :extraCharges, :rounding, :createdAt)
-                    RETURNING id
-                """)
+        String accessToken;
+        Integer billId = null;
+
+        accessToken = UUID.randomUUID().toString();
+
+        billId = jdbcClient
+                .sql("""
+                            INSERT INTO bills (name, creator_id, extra_charges, rounding, created_at, public_access_token)
+                            VALUES (:name, :creatorId, :extraCharges, :rounding, :createdAt, :token)
+                            RETURNING id
+                        """)
                 .param("name", receipt.getName())
                 .param("creatorId", payerId)
                 .param("extraCharges", receipt.getAdditionalChargesPercent())
                 .param("rounding", receipt.getRoundingAdjustment())
                 .param("createdAt", receipt.getNow())
+                .param("token", accessToken)
                 .query(Integer.class)
                 .single();
 
@@ -67,7 +75,6 @@ public class SplitRepositoryImpl implements SplitRepository {
                     String guestName = friend.getUsername();
 
                     boolean isPaid = payerId.equals(accountId);
-
                     LocalDateTime paidAt = isPaid ? receipt.getNow() : null;
 
                     participantId = jdbcClient.sql("""
@@ -101,7 +108,7 @@ public class SplitRepositoryImpl implements SplitRepository {
     @Override
     public Optional<ReceiptWithId> findReceiptById(int billId) {
         List<Map<String, Object>> billRows = jdbcClient.sql("""
-                    SELECT id, name, extra_charges, rounding, created_at, creator_id
+                    SELECT id, name, extra_charges, rounding, created_at, creator_id, public_access_token
                     FROM bills
                     WHERE id = :billId
                 """)
@@ -212,6 +219,7 @@ public class SplitRepositoryImpl implements SplitRepository {
         receiptWithId.setReceipt(receipt);
         receiptWithId.setCreatorId((String) billRow.get("creator_id"));
         receiptWithId.setMembers(members);
+        receiptWithId.setPublicAccessToken((String) billRow.get("public_access_token"));
 
         return Optional.of(receiptWithId);
     }
@@ -219,7 +227,7 @@ public class SplitRepositoryImpl implements SplitRepository {
     @Override
     public List<ReceiptWithId> findReceiptsByPayerId(String payerId) {
         List<Map<String, Object>> billRows = jdbcClient.sql("""
-                    SELECT id, name, extra_charges, rounding, created_at, creator_id
+                    SELECT id, name, extra_charges, rounding, created_at, creator_id, public_access_token
                     FROM bills
                     WHERE creator_id = :creatorId
                 """)
@@ -335,6 +343,7 @@ public class SplitRepositoryImpl implements SplitRepository {
             receiptWithId.setCreatorId((String) billRow.get("creator_id"));
             receiptWithId.setReceipt(receipt);
             receiptWithId.setMembers(members);
+            receiptWithId.setPublicAccessToken((String) billRow.get("public_access_token"));
 
             receipts.add(receiptWithId);
         }
@@ -358,12 +367,13 @@ public class SplitRepositoryImpl implements SplitRepository {
 
     @Override
     public List<ReceiptWithId> findReceiptsWhereUserIsParticipant(String accountId) {
-        List<Map<String, Object>> billRows = jdbcClient.sql("""
-                    SELECT DISTINCT b.id, b.name, b.extra_charges, b.rounding, b.created_at, b.creator_id
-                    FROM bills b
-                    JOIN split_participants sp ON b.id = sp.bill_id
-                    WHERE sp.account_id = :accountId AND b.creator_id != :accountId
-                """)
+        List<Map<String, Object>> billRows = jdbcClient
+                .sql("""
+                            SELECT DISTINCT b.id, b.name, b.extra_charges, b.rounding, b.created_at, b.creator_id, b.public_access_token
+                            FROM bills b
+                            JOIN split_participants sp ON b.id = sp.bill_id
+                            WHERE sp.account_id = :accountId AND b.creator_id != :accountId
+                        """)
                 .param("accountId", accountId)
                 .query()
                 .listOfRows();
@@ -379,7 +389,6 @@ public class SplitRepositoryImpl implements SplitRepository {
             receipt.setRoundingAdjustment(((Number) billRow.get("rounding")).intValue());
             receipt.setNow(((Timestamp) billRow.get("created_at")).toLocalDateTime());
 
-            // Fetch items
             List<Map<String, Object>> itemRows = jdbcClient.sql("""
                         SELECT id, item_name, quantity, price
                         FROM bill_items
@@ -474,6 +483,7 @@ public class SplitRepositoryImpl implements SplitRepository {
             receiptWithId.setCreatorId((String) billRow.get("creator_id"));
             receiptWithId.setReceipt(receipt);
             receiptWithId.setMembers(members);
+            receiptWithId.setPublicAccessToken((String) billRow.get("public_access_token"));
 
             receipts.add(receiptWithId);
         }

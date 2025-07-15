@@ -1,6 +1,7 @@
 package com.smartsplit.splitservice.Service.Implementation;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import com.smartsplit.splitservice.Result.CreateNewBillResult;
 import com.smartsplit.splitservice.Result.DeleteBillResult;
 import com.smartsplit.splitservice.Result.GetMyBillsResult;
 import com.smartsplit.splitservice.Result.GetMyDebtsResult;
+import com.smartsplit.splitservice.Result.GetSplitBillWithTokenResult;
 import com.smartsplit.splitservice.Result.PayMyDebtResult;
 import com.smartsplit.splitservice.Service.SplitService;
 
@@ -22,7 +24,7 @@ public class SplitServiceImpl implements SplitService {
 
     private final SplitRepository splitRepository;
 
-    public SplitServiceImpl(SplitRepository splitRepository){
+    public SplitServiceImpl(SplitRepository splitRepository) {
         this.splitRepository = splitRepository;
     }
 
@@ -38,7 +40,7 @@ public class SplitServiceImpl implements SplitService {
 
             result.setSuccess(true);
             result.setStatusCode(200);
-            
+
             return result;
         } catch (Exception e) {
             result.setSuccess(false);
@@ -55,7 +57,7 @@ public class SplitServiceImpl implements SplitService {
 
         GetMyBillsResult result = new GetMyBillsResult();
 
-        try{
+        try {
             final List<ReceiptWithId> myReceipts = splitRepository.findReceiptsByPayerId(initiatorId);
 
             result.setSuccess(true);
@@ -63,7 +65,7 @@ public class SplitServiceImpl implements SplitService {
             result.setData(myReceipts);
 
             return result;
-        }catch(Exception e){
+        } catch (Exception e) {
             result.setSuccess(false);
             result.setErrorMessage(e.toString());
             result.setStatusCode(500);
@@ -79,9 +81,10 @@ public class SplitServiceImpl implements SplitService {
         DeleteBillResult result = new DeleteBillResult();
 
         try {
-            ReceiptWithId receipt = splitRepository.findReceiptById(request.getId()).orElseThrow(() -> new Exception("Bill doesn't exist"));
-            
-            if (!receipt.getCreatorId().equals(initiatorId)){
+            ReceiptWithId receipt = splitRepository.findReceiptById(request.getId())
+                    .orElseThrow(() -> new Exception("Bill doesn't exist"));
+
+            if (!receipt.getCreatorId().equals(initiatorId)) {
                 result.setSuccess(false);
                 result.setErrorMessage("You are not the owner of the receipt");
                 result.setStatusCode(401);
@@ -92,7 +95,7 @@ public class SplitServiceImpl implements SplitService {
 
             result.setStatusCode(200);
             result.setSuccess(true);
-            
+
             return result;
         } catch (Exception e) {
             result.setSuccess(false);
@@ -109,7 +112,7 @@ public class SplitServiceImpl implements SplitService {
 
         GetMyDebtsResult result = new GetMyDebtsResult();
 
-        try{
+        try {
             final List<ReceiptWithId> myReceipts = splitRepository.findReceiptsWhereUserIsParticipant(initiatorId);
 
             result.setSuccess(true);
@@ -117,7 +120,7 @@ public class SplitServiceImpl implements SplitService {
             result.setData(myReceipts);
 
             return result;
-        }catch(Exception e){
+        } catch (Exception e) {
             result.setSuccess(false);
             result.setErrorMessage(e.toString());
             result.setStatusCode(500);
@@ -146,6 +149,44 @@ public class SplitServiceImpl implements SplitService {
 
             return result;
         }
+    }
+
+    @Override
+    public GetSplitBillWithTokenResult getSplitBillWithToken(int billId, String token) {
+        GetSplitBillWithTokenResult result = new GetSplitBillWithTokenResult();
+
+        try {
+            Optional<ReceiptWithId> bill = splitRepository.findReceiptById(billId);
+
+            if (bill.isEmpty()) {
+                result.setSuccess(false);
+                result.setErrorMessage("Split bill not found");
+                result.setStatusCode(404);
+
+                return result;
+            }
+
+            if (!bill.get().getPublicAccessToken().equals(token)) {
+                result.setSuccess(false);
+                result.setErrorMessage("Token is incorrect");
+                result.setStatusCode(401);
+
+                return result;
+            }
+
+            result.setSuccess(true);
+            result.setData(bill.get());
+            result.setStatusCode(200);
+
+            return result;
+        } catch (Exception e) {
+            result.setSuccess(false);
+            result.setErrorMessage(e.toString());
+            result.setStatusCode(500);
+
+            return result;
+        }
+
     }
 
 }

@@ -9,6 +9,7 @@ import com.smartsplit.splitservice.Result.CreateNewBillResult;
 import com.smartsplit.splitservice.Result.DeleteBillResult;
 import com.smartsplit.splitservice.Result.GetMyBillsResult;
 import com.smartsplit.splitservice.Result.GetMyDebtsResult;
+import com.smartsplit.splitservice.Result.GetSplitBillWithTokenResult;
 import com.smartsplit.splitservice.Result.PayMyDebtResult;
 
 public interface SplitService {
@@ -21,4 +22,6 @@ public interface SplitService {
     public GetMyDebtsResult getMyDebts(Jwt jwt);
 
     public PayMyDebtResult payMyDebt(PayMyDebtRequest request, Jwt jwt);
+
+    public GetSplitBillWithTokenResult getSplitBillWithToken(int billId, String token);
 }

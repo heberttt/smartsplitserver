@@ -16,11 +16,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/splitview/**").permitAll()
+                        .requestMatchers("/public/splitview/**").permitAll()
                         .anyRequest().authenticated())
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/splitview/**") 
-                )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt())
                 .addFilterAfter(new EmailVerificationFilter(), BasicAuthenticationFilter.class);
