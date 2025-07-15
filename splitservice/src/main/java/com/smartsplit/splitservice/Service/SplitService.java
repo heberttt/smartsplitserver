@@ -1,10 +1,12 @@
 package com.smartsplit.splitservice.Service;
 
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.smartsplit.splitservice.Request.CreateNewBillRequest;
 import com.smartsplit.splitservice.Request.DeleteBillRequest;
 import com.smartsplit.splitservice.Request.PayMyDebtRequest;
+import com.smartsplit.splitservice.Result.AttachPaymentPublicResult;
 import com.smartsplit.splitservice.Result.CreateNewBillResult;
 import com.smartsplit.splitservice.Result.DeleteBillResult;
 import com.smartsplit.splitservice.Result.GetMyBillsResult;
@@ -24,4 +26,6 @@ public interface SplitService {
     public PayMyDebtResult payMyDebt(PayMyDebtRequest request, Jwt jwt);
 
     public GetSplitBillWithTokenResult getSplitBillWithToken(int billId, String token);
+
+    public AttachPaymentPublicResult attachPaymentPublic(MultipartFile image, int billId, String token, String guestName);
 }

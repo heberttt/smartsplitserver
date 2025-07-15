@@ -17,4 +17,6 @@ public interface SplitRepository {
     public List<ReceiptWithId> findReceiptsWhereUserIsParticipant(String accountId);
 
     public void attachPayment(int billId, String payerId, String paymentImageLink);
+
+    public void attachPaymentGuest(int billId, String guestName, String paymentImageLink);
 }

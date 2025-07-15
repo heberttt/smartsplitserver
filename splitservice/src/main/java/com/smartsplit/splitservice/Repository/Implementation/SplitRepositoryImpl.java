@@ -525,4 +525,38 @@ public class SplitRepositoryImpl implements SplitRepository {
         }
     }
 
+
+    @Override
+    public void attachPaymentGuest(int billId, String guestName, String paymentImageLink) {
+        StringBuilder sql = new StringBuilder("""
+                    UPDATE split_participants
+                    SET is_paid = true,
+                        paid_at = NOW()
+                """);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("billId", billId);
+        params.put("guestName", guestName);
+
+        if (paymentImageLink != null) {
+            sql.append(", payment_proof_link = :paymentImageLink");
+            params.put("paymentImageLink", paymentImageLink);
+        }
+
+        sql.append("""
+                WHERE bill_id = :billId
+                AND guest_name = :guestName
+            """);
+
+        int rowsAffected = jdbcClient
+                .sql(sql.toString())
+                .params(params)
+                .update();
+
+        if (rowsAffected == 0) {
+            throw new IllegalArgumentException(
+                    "No matching guest participant found for bill ID " + billId + " and guest name " + guestName);
+        }
+    }
+
 }
