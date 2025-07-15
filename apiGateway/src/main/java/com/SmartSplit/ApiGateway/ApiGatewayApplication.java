@@ -80,7 +80,7 @@ public class ApiGatewayApplication {
 						)
 						.uri("http://localhost:8084")
 				)
-				.route(r -> r.path("/splitview/**")
+				.route(r -> r.path("/splitbill/**")
 						.filters(f -> f
 								.prefixPath("/public")
 								.addResponseHeader("X-Powered-By","SmartSplit Gateway Service")

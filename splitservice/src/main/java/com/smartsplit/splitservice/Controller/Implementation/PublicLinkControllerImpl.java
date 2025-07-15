@@ -12,7 +12,7 @@ import com.smartsplit.splitservice.Result.GetSplitBillWithTokenResult;
 import com.smartsplit.splitservice.Service.SplitService;
 
 @Controller
-@RequestMapping("/public/splitview")
+@RequestMapping("/public/splitbill")
 public class PublicLinkControllerImpl implements PublicLinkController{
 
     private SplitService splitService;

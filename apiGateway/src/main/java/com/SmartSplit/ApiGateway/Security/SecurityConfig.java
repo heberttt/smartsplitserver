@@ -15,7 +15,7 @@ public class SecurityConfig {
         http
             .csrf(ServerHttpSecurity.CsrfSpec::disable)
             .authorizeExchange(exchanges -> exchanges
-                .pathMatchers("/splitview/**").permitAll()
+                .pathMatchers("/splitbill/**").permitAll()
                 .pathMatchers("/account2/**").permitAll()
                 .anyExchange().authenticated()
             )
