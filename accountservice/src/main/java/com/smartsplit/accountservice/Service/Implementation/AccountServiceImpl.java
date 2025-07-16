@@ -7,6 +7,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import com.smartsplit.accountservice.DO.AccountDO;
+import com.smartsplit.accountservice.Firebase.FirebaseStorageService;
 import com.smartsplit.accountservice.Repository.AccountRepository;
 import com.smartsplit.accountservice.Request.ChangeProfilePictureRequest;
 import com.smartsplit.accountservice.Request.ChangeUsernameRequest;
@@ -23,24 +24,28 @@ public class AccountServiceImpl implements AccountService {
 
     final AccountRepository accountRepository;
 
-    public AccountServiceImpl(AccountRepository repository) {
+    final FirebaseStorageService firebaseStorageService;
+
+    public AccountServiceImpl(AccountRepository repository, FirebaseStorageService firebaseStorageService) {
         this.accountRepository = repository;
+        this.firebaseStorageService = firebaseStorageService;
     }
 
     @Override
-    public GetAccountResult getAccountById(String param){
+    public GetAccountResult getAccountById(String param) {
         GetAccountResult result = new GetAccountResult();
 
-        try{
-            
-            final AccountDO account = accountRepository.findById(param).orElseThrow(() -> new Exception("Account not found"));
+        try {
+
+            final AccountDO account = accountRepository.findById(param)
+                    .orElseThrow(() -> new Exception("Account not found"));
 
             result.setData(account);
             result.setSuccess(true);
             result.setStatusCode(200);
 
             return result;
-        }catch(Exception e){
+        } catch (Exception e) {
             result.setSuccess(false);
             result.setErrorMessage(e.toString());
             result.setStatusCode(500);
@@ -65,6 +70,18 @@ public class AccountServiceImpl implements AccountService {
                 newAccount.setProfilePictureLink(jwt.getClaimAsString("picture") == null
                         ? "https://firebasestorage.googleapis.com/v0/b/smartsplit-87a0b.firebasestorage.app/o/profiles%2Fuser-profile.png?alt=media"
                         : jwt.getClaimAsString("picture"));
+
+                if (jwt.getClaimAsString("picture") == null) {
+
+                } else {
+                    try {
+                        firebaseStorageService.uploadImage(jwt.getClaimAsString("picture"), "profiles/" + id);
+                    } catch (Exception e) {
+                        newAccount.setProfilePictureLink(
+                                "https://firebasestorage.googleapis.com/v0/b/smartsplit-87a0b.firebasestorage.app/o/profiles%2Fuser-profile.png?alt=media");
+                    }
+
+                }
                 accountRepository.save(newAccount);
 
                 result.setData(newAccount);
@@ -173,8 +190,8 @@ public class AccountServiceImpl implements AccountService {
     public GetAccountsResult getAccountsById(GetAccountsRequest request) {
         GetAccountsResult result = new GetAccountsResult();
 
-        try{
-            
+        try {
+
             final List<AccountDO> accounts = accountRepository.findByIds(request.getAccountIds());
 
             result.setData(accounts);
@@ -182,7 +199,7 @@ public class AccountServiceImpl implements AccountService {
             result.setStatusCode(200);
 
             return result;
-        }catch(Exception e){
+        } catch (Exception e) {
             result.setSuccess(false);
             result.setErrorMessage(e.toString());
             result.setStatusCode(500);
