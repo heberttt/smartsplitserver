@@ -15,4 +15,6 @@ public interface GroupRepository {
     public void joinGroup(int groupId, String userId);
 
     public void deleteGroup(int groupId);
+
+    public void leaveGroup(int groupId, String userId);
 }

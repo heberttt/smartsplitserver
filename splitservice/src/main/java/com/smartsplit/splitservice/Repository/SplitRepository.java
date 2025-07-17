@@ -6,7 +6,7 @@ import com.smartsplit.splitservice.Model.Receipt;
 import com.smartsplit.splitservice.Model.ReceiptWithId;
 
 public interface SplitRepository {
-    public void createSplitBill(String payerId, Receipt receipt);
+    public void createSplitBill(String payerId, String groupId, Receipt receipt);
 
     public List<ReceiptWithId> findReceiptsByPayerId(String payerId);
 

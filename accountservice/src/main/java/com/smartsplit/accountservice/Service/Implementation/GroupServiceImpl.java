@@ -9,10 +9,12 @@ import org.springframework.stereotype.Service;
 import com.smartsplit.accountservice.Request.CreateGroupRequest;
 import com.smartsplit.accountservice.Request.DeleteGroupRequest;
 import com.smartsplit.accountservice.Request.InviteFriendRequest;
+import com.smartsplit.accountservice.Request.LeaveGroupRequest;
 import com.smartsplit.accountservice.Result.CreateGroupResult;
 import com.smartsplit.accountservice.Result.DeleteGroupResult;
 import com.smartsplit.accountservice.Result.GetMyGroupsResult;
 import com.smartsplit.accountservice.Result.InviteFriendResult;
+import com.smartsplit.accountservice.Result.LeaveGroupResult;
 import com.smartsplit.accountservice.Service.GroupService;
 import com.smartsplit.accountservice.DO.AccountDO;
 import com.smartsplit.accountservice.DO.GroupDO;
@@ -163,6 +165,28 @@ public class GroupServiceImpl implements GroupService{
             return result;
 
         }catch(Exception e){
+            result.setSuccess(false);
+            result.setStatusCode(500);
+            result.setErrorMessage(e.toString());
+            return result;
+        }
+    }
+
+    @Override
+    public LeaveGroupResult leaveGroup(LeaveGroupRequest request, Jwt jwt) {
+        String initiatorId = jwt.getClaimAsString("user_id");
+
+        LeaveGroupResult result = new LeaveGroupResult();
+
+        try {
+            groupRepository.leaveGroup(request.getGroupId(), initiatorId);
+
+            result.setSuccess(true);
+            result.setStatusCode(200);
+            
+            return result;
+        } catch (Exception e) {
+            System.out.println(e.toString());
             result.setSuccess(false);
             result.setStatusCode(500);
             result.setErrorMessage(e.toString());

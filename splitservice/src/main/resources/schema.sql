@@ -5,7 +5,9 @@
 --     extra_charges DECIMAL,
 --     rounding DECIMAL,
 --     created_at TIMESTAMP DEFAULT now(),
---     public_access_token VARCHAR(255))
+--     public_access_token VARCHAR(255),
+--     group_id VARCHAR(50)
+--)
 
 -- CREATE TABLE bill_items (
 --     id SERIAL PRIMARY KEY,

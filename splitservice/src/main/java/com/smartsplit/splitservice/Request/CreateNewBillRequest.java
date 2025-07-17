@@ -7,6 +7,7 @@ import com.smartsplit.splitservice.Model.Receipt;
 @Data
 public class CreateNewBillRequest {
     private Receipt receipt;
+    private int groupId;
 }
 
 

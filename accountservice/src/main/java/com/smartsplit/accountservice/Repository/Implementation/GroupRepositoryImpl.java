@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.Assert;
 
 import com.smartsplit.accountservice.DO.AccountDO;
 import com.smartsplit.accountservice.DO.GroupDO;
@@ -142,5 +143,18 @@ public class GroupRepositoryImpl implements GroupRepository {
                 .param("groupId", groupId)
                 .update();
     }
+
+    @Override
+    public void leaveGroup(int groupId, String userId) {
+        final int result = jdbcClient
+                .sql("DELETE FROM group_members WHERE group_id = :groupId AND account_id = :accountId")
+                .param("groupId", groupId)
+                .param("accountId", userId)
+                .update();
+
+        Assert.state(result == 1, "Failed to leave group: " + userId);
+    }
+
+    
 
 }
