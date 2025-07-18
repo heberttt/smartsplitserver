@@ -17,6 +17,7 @@ public class SecurityConfig {
             .authorizeExchange(exchanges -> exchanges
                 .pathMatchers("/splitbill/**").permitAll()
                 .pathMatchers("/account2/**").permitAll()
+                .pathMatchers("/splitview/**").permitAll()
                 .anyExchange().authenticated()
             )
             .oauth2ResourceServer(oauth2 -> oauth2

@@ -10,7 +10,7 @@ import 'package:smartsplit_link/Service/split_service.dart';
 final _router = GoRouter(
   routes: [
     GoRoute(
-      path: '/public/splitview',
+      path: '/splitview',
       builder: (context, state) {
         final billIdStr = state.uri.queryParameters['billId'];
         final token = state.uri.queryParameters['token'];

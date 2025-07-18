@@ -1,4 +1,4 @@
-import 'package:smartsplit_link/Model/Friend.dart';
+import 'package:smartsplit_link/Model/friend.dart';
 
 class FriendPayment {
   final Friend friend;

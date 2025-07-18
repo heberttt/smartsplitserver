@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:smartsplit_link/Model/Friend.dart';
+import 'package:smartsplit_link/Model/friend.dart';
 import 'package:smartsplit_link/Model/friend_payment.dart';
 import 'package:smartsplit_link/Model/friend_split.dart';
 import 'package:smartsplit_link/Model/registered_friend.dart';
@@ -116,7 +116,7 @@ class SplitService {
 
   Future<RegisteredFriend> getMyFriend(String accountId) async {
     final response = await http.get(
-      Uri.parse("http://192.168.100.61:8080/account2?id=$accountId"),
+      Uri.parse("${BackendUrl.GATEWAY_URL}/account2?id=$accountId"),
       headers: {
         'Content-Type': 'application/json',
       },

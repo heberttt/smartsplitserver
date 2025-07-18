@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smartsplit_link/Model/Friend.dart';
+import 'package:smartsplit_link/Model/friend.dart';
 import 'package:smartsplit_link/Model/friend_payment.dart';
 import 'package:smartsplit_link/Model/friend_split.dart';
 import 'package:smartsplit_link/Model/guest_friend.dart';

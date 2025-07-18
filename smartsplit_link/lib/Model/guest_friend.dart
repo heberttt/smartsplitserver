@@ -1,6 +1,6 @@
 import 'package:avatar_plus/avatar_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:smartsplit_link/Model/Friend.dart';
+import 'package:smartsplit_link/Model/friend.dart';
 
 class GuestFriend implements Friend{
   String name;

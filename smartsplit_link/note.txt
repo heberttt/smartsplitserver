@@ -1,0 +1,3 @@
+flutter build web --release --base-href /
+
+serve -s . -l tcp://0.0.0.0:8085

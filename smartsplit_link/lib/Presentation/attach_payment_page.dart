@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-import 'package:smartsplit_link/Model/Friend.dart';
+import 'package:smartsplit_link/Model/friend.dart';
 import 'package:smartsplit_link/Model/guest_friend.dart';
 import 'package:smartsplit_link/Model/registered_friend.dart';
 import 'package:smartsplit_link/Model/split_bill.dart';
@@ -49,6 +49,7 @@ class _AttachPaymentPageState extends State<AttachPaymentPage> {
   Future<void> _pickImage() async {
     final pickedFile = await ImagePicker().pickImage(
       source: ImageSource.gallery,
+      imageQuality: 30
     );
     if (pickedFile != null) {
       setState(() {

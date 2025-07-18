@@ -43,7 +43,7 @@ public class SplitServiceImpl implements SplitService {
 
         try {
 
-            splitRepository.createSplitBill(initiatorId, String.valueOf(request.getGroupId()), request.getReceipt());
+            splitRepository.createSplitBill(initiatorId, request.getGroupId(), request.getReceipt());
 
             result.setSuccess(true);
             result.setStatusCode(200);
