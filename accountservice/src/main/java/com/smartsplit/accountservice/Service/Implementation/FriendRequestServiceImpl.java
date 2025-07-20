@@ -66,7 +66,7 @@ public class FriendRequestServiceImpl implements FriendRequestService{
 
             Optional<AccountDO> searchedAccount = accountRepository.findByEmail(request.getTargetEmail());
 
-            if (searchedAccount == null){
+            if (searchedAccount.isEmpty()){
                 throw new Exception("Account with that email does not exist");
             }
 
