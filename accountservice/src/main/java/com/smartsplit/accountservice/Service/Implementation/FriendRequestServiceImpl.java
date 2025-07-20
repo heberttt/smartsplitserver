@@ -50,7 +50,7 @@ public class FriendRequestServiceImpl implements FriendRequestService{
         }catch(Exception e){
             result.setSuccess(false);
             result.setStatusCode(500);
-            result.setErrorMessage(e.toString());
+            result.setErrorMessage(e.getMessage());
 
             return result;
         }
@@ -111,7 +111,7 @@ public class FriendRequestServiceImpl implements FriendRequestService{
 
         }catch(Exception e){
             result.setSuccess(false);
-            result.setErrorMessage(e.toString());
+            result.setErrorMessage(e.getMessage());
             result.setStatusCode(500);
 
             System.out.println(e.toString());
@@ -167,7 +167,7 @@ public class FriendRequestServiceImpl implements FriendRequestService{
 
         }catch(Exception e){
             result.setSuccess(false);
-            result.setErrorMessage(e.toString());
+            result.setErrorMessage(e.getMessage());
             result.setStatusCode(500);
 
             System.out.println(e.toString());
@@ -201,7 +201,7 @@ public class FriendRequestServiceImpl implements FriendRequestService{
             return result;
         }catch(Exception e){
             result.setSuccess(false);
-            result.setErrorMessage(e.toString());
+            result.setErrorMessage(e.getMessage());
             result.setStatusCode(500);
             return result;
         }

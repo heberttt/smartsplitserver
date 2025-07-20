@@ -72,7 +72,7 @@ public class GroupServiceImpl implements GroupService{
         }catch(Exception e){
             result.setSuccess(false);
             result.setStatusCode(500);
-            result.setErrorMessage(e.toString());
+            result.setErrorMessage(e.getMessage());
             return result;
         }
     }
@@ -95,7 +95,7 @@ public class GroupServiceImpl implements GroupService{
         } catch (Exception e) {
             result.setSuccess(false);
             result.setStatusCode(500);
-            result.setErrorMessage(e.toString());
+            result.setErrorMessage(e.getMessage());
             return result;
         }
     }
@@ -135,7 +135,7 @@ public class GroupServiceImpl implements GroupService{
         } catch (Exception e) {
             result.setSuccess(false);
             result.setStatusCode(500);
-            result.setErrorMessage(e.toString());
+            result.setErrorMessage(e.getMessage());
             return result;
         }
     }
@@ -167,7 +167,7 @@ public class GroupServiceImpl implements GroupService{
         }catch(Exception e){
             result.setSuccess(false);
             result.setStatusCode(500);
-            result.setErrorMessage(e.toString());
+            result.setErrorMessage(e.getMessage());
             return result;
         }
     }
@@ -189,7 +189,7 @@ public class GroupServiceImpl implements GroupService{
             System.out.println(e.toString());
             result.setSuccess(false);
             result.setStatusCode(500);
-            result.setErrorMessage(e.toString());
+            result.setErrorMessage(e.getMessage());
             return result;
         }
     }

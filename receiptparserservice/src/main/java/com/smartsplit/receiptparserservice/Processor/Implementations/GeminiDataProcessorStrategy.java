@@ -32,7 +32,7 @@ public class GeminiDataProcessorStrategy implements DataProcessorStrategy {
             System.out.println(apiResult);
         }catch(Exception e){
             result.setSuccess(false);
-            result.setErrorMessage(e.toString());
+            result.setErrorMessage(e.getMessage());
             result.setStatusCode(500);
             return result;
         }
@@ -43,7 +43,7 @@ public class GeminiDataProcessorStrategy implements DataProcessorStrategy {
             result.setStatusCode(200);
         }catch (Exception e){
             result.setSuccess(false);
-            result.setErrorMessage(e.toString());
+            result.setErrorMessage(e.getMessage());
             result.setStatusCode(500);
         }
 

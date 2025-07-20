@@ -51,7 +51,7 @@ public class SplitServiceImpl implements SplitService {
             return result;
         } catch (Exception e) {
             result.setSuccess(false);
-            result.setErrorMessage(e.toString());
+            result.setErrorMessage(e.getMessage());
             result.setStatusCode(500);
 
             return result;
@@ -74,7 +74,7 @@ public class SplitServiceImpl implements SplitService {
             return result;
         } catch (Exception e) {
             result.setSuccess(false);
-            result.setErrorMessage(e.toString());
+            result.setErrorMessage(e.getMessage());
             result.setStatusCode(500);
 
             return result;
@@ -106,7 +106,7 @@ public class SplitServiceImpl implements SplitService {
             return result;
         } catch (Exception e) {
             result.setSuccess(false);
-            result.setErrorMessage(e.toString());
+            result.setErrorMessage(e.getMessage());
             result.setStatusCode(500);
 
             return result;
@@ -129,7 +129,7 @@ public class SplitServiceImpl implements SplitService {
             return result;
         } catch (Exception e) {
             result.setSuccess(false);
-            result.setErrorMessage(e.toString());
+            result.setErrorMessage(e.getMessage());
             result.setStatusCode(500);
 
             return result;
@@ -151,7 +151,7 @@ public class SplitServiceImpl implements SplitService {
             return result;
         } catch (Exception e) {
             result.setSuccess(false);
-            result.setErrorMessage(e.toString());
+            result.setErrorMessage(e.getMessage());
             result.setStatusCode(500);
 
             return result;
@@ -188,7 +188,7 @@ public class SplitServiceImpl implements SplitService {
             return result;
         } catch (Exception e) {
             result.setSuccess(false);
-            result.setErrorMessage(e.toString());
+            result.setErrorMessage(e.getMessage());
             result.setStatusCode(500);
 
             return result;
@@ -251,7 +251,7 @@ public class SplitServiceImpl implements SplitService {
 
         } catch (Exception e) {
             result.setSuccess(false);
-            result.setErrorMessage(e.toString());
+            result.setErrorMessage(e.getMessage());
             result.setStatusCode(500);
 
             return result;
