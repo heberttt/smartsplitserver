@@ -75,7 +75,7 @@ public class AccountServiceImpl implements AccountService {
 
                 } else {
                     try {
-                        firebaseStorageService.uploadImage(jwt.getClaimAsString("picture"), "profiles/" + id);
+                        newAccount.setProfilePictureLink(firebaseStorageService.uploadImage(jwt.getClaimAsString("picture"), "profiles/" + id));
                     } catch (Exception e) {
                         newAccount.setProfilePictureLink(
                                 "https://firebasestorage.googleapis.com/v0/b/smartsplit-87a0b.firebasestorage.app/o/profiles%2Fuser-profile.png?alt=media");
