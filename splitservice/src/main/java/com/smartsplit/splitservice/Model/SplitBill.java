@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class ReceiptWithId {
+public class SplitBill {
     private int id;
     private Receipt receipt;
     private String creatorId;

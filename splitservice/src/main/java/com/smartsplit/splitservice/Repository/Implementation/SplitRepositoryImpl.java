@@ -5,7 +5,7 @@ import com.smartsplit.splitservice.Model.FriendPayment;
 import com.smartsplit.splitservice.Model.FriendSplit;
 import com.smartsplit.splitservice.Model.Receipt;
 import com.smartsplit.splitservice.Model.ReceiptItemSplit;
-import com.smartsplit.splitservice.Model.ReceiptWithId;
+import com.smartsplit.splitservice.Model.SplitBill;
 import com.smartsplit.splitservice.Repository.SplitRepository;
 
 import java.sql.Timestamp;
@@ -107,7 +107,7 @@ public class SplitRepositoryImpl implements SplitRepository {
     }
 
     @Override
-    public Optional<ReceiptWithId> findReceiptById(int billId) {
+    public Optional<SplitBill> findReceiptById(int billId) {
         List<Map<String, Object>> billRows = jdbcClient.sql("""
                     SELECT id, name, extra_charges, rounding, created_at, creator_id, public_access_token, group_id
                     FROM bills
@@ -215,7 +215,7 @@ public class SplitRepositoryImpl implements SplitRepository {
             members.add(payment);
         }
 
-        ReceiptWithId receiptWithId = new ReceiptWithId();
+        SplitBill receiptWithId = new SplitBill();
         receiptWithId.setId(id);
         receiptWithId.setReceipt(receipt);
         receiptWithId.setCreatorId((String) billRow.get("creator_id"));
@@ -227,7 +227,7 @@ public class SplitRepositoryImpl implements SplitRepository {
     }
 
     @Override
-    public List<ReceiptWithId> findReceiptsByPayerId(String payerId) {
+    public List<SplitBill> findReceiptsByPayerId(String payerId) {
         List<Map<String, Object>> billRows = jdbcClient.sql("""
                     SELECT id, name, extra_charges, rounding, created_at, creator_id, public_access_token, group_id
                     FROM bills
@@ -237,7 +237,7 @@ public class SplitRepositoryImpl implements SplitRepository {
                 .query()
                 .listOfRows();
 
-        List<ReceiptWithId> receipts = new ArrayList<>();
+        List<SplitBill> receipts = new ArrayList<>();
 
         for (Map<String, Object> billRow : billRows) {
             int billId = (int) billRow.get("id");
@@ -340,7 +340,7 @@ public class SplitRepositoryImpl implements SplitRepository {
                 members.add(payment);
             }
 
-            ReceiptWithId receiptWithId = new ReceiptWithId();
+            SplitBill receiptWithId = new SplitBill();
             receiptWithId.setId(billId);
             receiptWithId.setCreatorId((String) billRow.get("creator_id"));
             receiptWithId.setReceipt(receipt);
@@ -369,7 +369,7 @@ public class SplitRepositoryImpl implements SplitRepository {
     }
 
     @Override
-    public List<ReceiptWithId> findReceiptsWhereUserIsParticipant(String accountId) {
+    public List<SplitBill> findReceiptsWhereUserIsParticipant(String accountId) {
         List<Map<String, Object>> billRows = jdbcClient
                 .sql("""
                             SELECT DISTINCT b.id, b.name, b.extra_charges, b.rounding, b.created_at, b.creator_id, b.public_access_token, b.group_id
@@ -381,7 +381,7 @@ public class SplitRepositoryImpl implements SplitRepository {
                 .query()
                 .listOfRows();
 
-        List<ReceiptWithId> receipts = new ArrayList<>();
+        List<SplitBill> receipts = new ArrayList<>();
 
         for (Map<String, Object> billRow : billRows) {
             int billId = (int) billRow.get("id");
@@ -481,7 +481,7 @@ public class SplitRepositoryImpl implements SplitRepository {
                 members.add(payment);
             }
 
-            ReceiptWithId receiptWithId = new ReceiptWithId();
+            SplitBill receiptWithId = new SplitBill();
             receiptWithId.setId(billId);
             receiptWithId.setCreatorId((String) billRow.get("creator_id"));
             receiptWithId.setReceipt(receipt);

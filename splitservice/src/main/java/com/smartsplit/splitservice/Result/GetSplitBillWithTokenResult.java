@@ -1,6 +1,6 @@
 package com.smartsplit.splitservice.Result;
 
-import com.smartsplit.splitservice.Model.ReceiptWithId;
+import com.smartsplit.splitservice.Model.SplitBill;
 
 import lombok.Data;
 
@@ -12,5 +12,5 @@ public class GetSplitBillWithTokenResult {
 
     private String errorMessage;
 
-    private ReceiptWithId data;
+    private SplitBill data;
 }

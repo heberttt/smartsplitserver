@@ -2,7 +2,7 @@ package com.smartsplit.splitservice.Result;
 
 import java.util.List;
 
-import com.smartsplit.splitservice.Model.ReceiptWithId;
+import com.smartsplit.splitservice.Model.SplitBill;
 
 import lombok.Data;
 
@@ -14,5 +14,5 @@ public class GetMyDebtsResult {
 
     private String errorMessage;
 
-    private List<ReceiptWithId> data;
+    private List<SplitBill> data;
 }

@@ -3,18 +3,18 @@ import java.util.List;
 import java.util.Optional;
 
 import com.smartsplit.splitservice.Model.Receipt;
-import com.smartsplit.splitservice.Model.ReceiptWithId;
+import com.smartsplit.splitservice.Model.SplitBill;
 
 public interface SplitRepository {
     public void createSplitBill(String payerId, String groupId, Receipt receipt);
 
-    public List<ReceiptWithId> findReceiptsByPayerId(String payerId);
+    public List<SplitBill> findReceiptsByPayerId(String payerId);
 
     public void deleteBill(int billId);
 
-    public Optional<ReceiptWithId> findReceiptById(int billId);
+    public Optional<SplitBill> findReceiptById(int billId);
 
-    public List<ReceiptWithId> findReceiptsWhereUserIsParticipant(String accountId);
+    public List<SplitBill> findReceiptsWhereUserIsParticipant(String accountId);
 
     public void attachPayment(int billId, String payerId, String paymentImageLink);
 

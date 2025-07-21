@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.smartsplit.splitservice.Firebase.FirebaseStorageService;
 import com.smartsplit.splitservice.Model.FriendPayment;
-import com.smartsplit.splitservice.Model.ReceiptWithId;
+import com.smartsplit.splitservice.Model.SplitBill;
 import com.smartsplit.splitservice.Repository.SplitRepository;
 import com.smartsplit.splitservice.Request.CreateNewBillRequest;
 import com.smartsplit.splitservice.Request.DeleteBillRequest;
@@ -65,7 +65,7 @@ public class SplitServiceImpl implements SplitService {
         GetMyBillsResult result = new GetMyBillsResult();
 
         try {
-            final List<ReceiptWithId> myReceipts = splitRepository.findReceiptsByPayerId(initiatorId);
+            final List<SplitBill> myReceipts = splitRepository.findReceiptsByPayerId(initiatorId);
 
             result.setSuccess(true);
             result.setStatusCode(200);
@@ -88,7 +88,7 @@ public class SplitServiceImpl implements SplitService {
         DeleteBillResult result = new DeleteBillResult();
 
         try {
-            ReceiptWithId receipt = splitRepository.findReceiptById(request.getId())
+            SplitBill receipt = splitRepository.findReceiptById(request.getId())
                     .orElseThrow(() -> new Exception("Bill doesn't exist"));
 
             if (!receipt.getCreatorId().equals(initiatorId)) {
@@ -120,7 +120,7 @@ public class SplitServiceImpl implements SplitService {
         GetMyDebtsResult result = new GetMyDebtsResult();
 
         try {
-            final List<ReceiptWithId> myReceipts = splitRepository.findReceiptsWhereUserIsParticipant(initiatorId);
+            final List<SplitBill> myReceipts = splitRepository.findReceiptsWhereUserIsParticipant(initiatorId);
 
             result.setSuccess(true);
             result.setStatusCode(200);
@@ -163,7 +163,7 @@ public class SplitServiceImpl implements SplitService {
         GetSplitBillWithTokenResult result = new GetSplitBillWithTokenResult();
 
         try {
-            Optional<ReceiptWithId> bill = splitRepository.findReceiptById(billId);
+            Optional<SplitBill> bill = splitRepository.findReceiptById(billId);
 
             if (bill.isEmpty()) {
                 result.setSuccess(false);
@@ -202,7 +202,7 @@ public class SplitServiceImpl implements SplitService {
         AttachPaymentPublicResult result = new AttachPaymentPublicResult();
 
         try {
-            Optional<ReceiptWithId> bill = splitRepository.findReceiptById(billId);
+            Optional<SplitBill> bill = splitRepository.findReceiptById(billId);
 
             if (bill.isEmpty()) {
                 result.setSuccess(false);
@@ -263,7 +263,7 @@ public class SplitServiceImpl implements SplitService {
         AttachPaymentPublicResult result = new AttachPaymentPublicResult();
 
         try {
-            Optional<ReceiptWithId> bill = splitRepository.findReceiptById(billId);
+            Optional<SplitBill> bill = splitRepository.findReceiptById(billId);
 
             if (bill.isEmpty()) {
                 result.setSuccess(false);
