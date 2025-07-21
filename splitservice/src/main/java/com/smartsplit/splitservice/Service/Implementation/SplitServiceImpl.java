@@ -258,4 +258,62 @@ public class SplitServiceImpl implements SplitService {
         }
     }
 
+    @Override
+    public AttachPaymentPublicResult approvePaymentWithoutAttachmentPublic(int billId, String token, String guestName) {
+        AttachPaymentPublicResult result = new AttachPaymentPublicResult();
+
+        try {
+            Optional<ReceiptWithId> bill = splitRepository.findReceiptById(billId);
+
+            if (bill.isEmpty()) {
+                result.setSuccess(false);
+                result.setErrorMessage("Split bill not found");
+                result.setStatusCode(404);
+
+                return result;
+            }
+
+            if (!bill.get().getPublicAccessToken().equals(token)) {
+                result.setSuccess(false);
+                result.setErrorMessage("Token is incorrect");
+                result.setStatusCode(401);
+
+                return result;
+            }
+
+            Optional<FriendPayment> matchingGuest = bill.get().getMembers().stream()
+                    .filter(fp -> fp.getFriend() != null &&
+                            guestName.equals(fp.getFriend().getUsername()))
+                    .findFirst();
+
+            if (matchingGuest.isEmpty()) {
+                result.setSuccess(false);
+                result.setErrorMessage("Guest with that name does not exist");
+                result.setStatusCode(404);
+                return result;
+            }
+
+            if (matchingGuest.get().isHasPaid()) {
+                result.setSuccess(false);
+                result.setErrorMessage("This guest has already paid.");
+                result.setStatusCode(400);
+                return result;
+            }
+
+            splitRepository.attachPaymentGuest(billId, guestName, null);
+
+            result.setSuccess(true);
+            result.setStatusCode(200);
+
+            return result;
+
+        } catch (Exception e) {
+            result.setSuccess(false);
+            result.setErrorMessage(e.getMessage());
+            result.setStatusCode(500);
+
+            return result;
+        }
+    }
+
 }

@@ -59,34 +59,29 @@ class _AttachPaymentPageState extends State<AttachPaymentPage> {
   }
 
   Future<void> _approvePayment() async {
-    if (_imageFile == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select an image first.')),
-      );
-      return;
-    }
-
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text("Confirm Payment"),
-        content: const Text(
-          "Are you sure you want to submit this payment proof?",
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text("Cancel"),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text("Confirm"),
-          ),
-        ],
+    final confirmation = await showDialog<bool>(
+  context: context,
+  builder: (_) => AlertDialog(
+    title: const Text("Confirm Payment"),
+    content: Text(
+      _imageFile == null
+          ? "Are you sure you want to approve this payment **without uploading a payment image**?"
+          : "Are you sure you want to submit this payment proof?",
+    ),
+    actions: [
+      TextButton(
+        onPressed: () => Navigator.pop(context, false),
+        child: const Text("Cancel"),
       ),
+      ElevatedButton(
+        onPressed: () => Navigator.pop(context, true),
+        child: const Text("Confirm"),
+      ),
+    ],
+  ),
     );
 
-    if (confirm != true) return;
+  if (confirmation != true) return;
 
     setState(() {
       _isUploading = true;
@@ -104,7 +99,7 @@ class _AttachPaymentPageState extends State<AttachPaymentPage> {
     final success = await _splitService.uploadPayment(
       widget.splitBill.id,
       token,
-      _imageFile!,
+      _imageFile,
       guestFriendName,
     );
 
@@ -259,7 +254,7 @@ class _AttachPaymentPageState extends State<AttachPaymentPage> {
                 : const SizedBox(height: 0),
             const SizedBox(height: 10),
             ElevatedButton(
-              onPressed: (_hasPaid || _isUploading || _imageFile == null) ? null : _approvePayment,
+              onPressed: (_hasPaid || _isUploading) ? null : _approvePayment,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).primaryColor,
                 foregroundColor: Colors.white,

@@ -31,11 +31,19 @@ public class PublicLinkControllerImpl implements PublicLinkController{
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
-    @PostMapping()
+    @PostMapping("/attachment")
     public ResponseEntity<AttachPaymentPublicResult> attachPaymentPublic(@RequestParam("file") MultipartFile file, @RequestParam int billId, @RequestParam String token, @RequestParam String guestName){
         final AttachPaymentPublicResult result = splitService.attachPaymentPublic(file, billId, token, guestName);
         System.out.println(guestName);
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
+
+    @PostMapping()
+    public ResponseEntity<AttachPaymentPublicResult> approveWithoutAttachmentPublic(@RequestParam int billId, @RequestParam String token, @RequestParam String guestName){
+        final AttachPaymentPublicResult result = splitService.approvePaymentWithoutAttachmentPublic(billId, token, guestName);
+        System.out.println(guestName);
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
+    }
+    
     
 }

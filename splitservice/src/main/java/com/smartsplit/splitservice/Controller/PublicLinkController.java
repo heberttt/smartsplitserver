@@ -11,4 +11,6 @@ public interface PublicLinkController {
 
 
     public ResponseEntity<AttachPaymentPublicResult> attachPaymentPublic(MultipartFile file,int billId, String token,String guestName);
+
+    public ResponseEntity<AttachPaymentPublicResult> approveWithoutAttachmentPublic(int billId, String token, String guestName);
 }

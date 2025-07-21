@@ -27,5 +27,9 @@ public interface SplitService {
 
     public GetSplitBillWithTokenResult getSplitBillWithToken(int billId, String token);
 
-    public AttachPaymentPublicResult attachPaymentPublic(MultipartFile image, int billId, String token, String guestName);
+    public AttachPaymentPublicResult attachPaymentPublic(MultipartFile image, int billId, String token,
+            String guestName);
+
+    public AttachPaymentPublicResult approvePaymentWithoutAttachmentPublic(int billId, String token,
+            String guestName);
 }

@@ -134,21 +134,25 @@ class SplitService {
 
 
   Future<bool> uploadPayment(
-    int billId,
-    String token,
-    String imageFilePath,
-    String guestName,
-  ) async {
-    try {
-      final uri = Uri.parse("${BackendUrl.GATEWAY_URL}/splitbill");
+  int billId,
+  String token,
+  String? imageFilePath,
+  String guestName,
+) async {
+  try {
+    final bool hasFile = imageFilePath != null;
+    final uri = Uri.parse(
+      "${BackendUrl.GATEWAY_URL}/splitbill${hasFile ? "/attachment" : ""}",
+    );
 
+    if (hasFile) {
       var request = http.MultipartRequest('POST', uri);
 
       request.fields['billId'] = billId.toString();
       request.fields['token'] = token;
       request.fields['guestName'] = guestName;
 
-      final response = await http.get(Uri.parse(imageFilePath));
+      final response = await http.get(Uri.parse(imageFilePath!));
       if (response.statusCode == 200) {
         request.files.add(http.MultipartFile.fromBytes(
           'file',
@@ -170,9 +174,24 @@ class SplitService {
         print('Failed to upload payment. Status: ${streamedResponse.statusCode}, Body: $responseBody');
         return false;
       }
-    } catch (e) {
-      print('Error during payment upload: $e');
-      return false;
+    } else {
+      final response = await http.post(uri, body: {
+        'billId': billId.toString(),
+        'token': token,
+        'guestName': guestName,
+      });
+
+      if (response.statusCode == 200) {
+        print('Payment approved without attachment. Response: ${response.body}');
+        return true;
+      } else {
+        print('Failed to approve without attachment. Status: ${response.statusCode}, Body: ${response.body}');
+        return false;
+      }
     }
+  } catch (e) {
+    print('Error during payment upload: $e');
+    return false;
   }
+}
 }
