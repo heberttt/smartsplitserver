@@ -34,8 +34,9 @@ public class SplitRepositoryImpl implements SplitRepository {
         String accessToken;
         Integer billId = null;
 
-        accessToken = UUID.randomUUID().toString();
+        accessToken = UUID.randomUUID().toString(); //public token access creation
 
+        // insert into bill table
         billId = jdbcClient
                 .sql("""
                             INSERT INTO bills (name, creator_id, extra_charges, rounding, created_at, public_access_token, group_id)
@@ -54,6 +55,7 @@ public class SplitRepositoryImpl implements SplitRepository {
 
         Map<Friend, Integer> participantIdMap = new HashMap<>();
 
+        //insert into bill_items table
         for (ReceiptItemSplit itemSplit : receipt.getSplits()) {
             Integer billItemId = jdbcClient.sql("""
                         INSERT INTO bill_items (bill_id, item_name, quantity, price)
@@ -67,6 +69,7 @@ public class SplitRepositoryImpl implements SplitRepository {
                     .query(Integer.class)
                     .single();
 
+            
             for (FriendSplit friendSplit : itemSplit.getFriendSplits()) {
                 Friend friend = friendSplit.getFriend();
 
@@ -78,6 +81,7 @@ public class SplitRepositoryImpl implements SplitRepository {
                     boolean isPaid = payerId.equals(accountId);
                     LocalDateTime paidAt = isPaid ? receipt.getNow() : null;
 
+                    // insert into split_participants table
                     participantId = jdbcClient.sql("""
                                 INSERT INTO split_participants (bill_id, account_id, guest_name, is_paid, paid_at)
                                 VALUES (:billId, :accountId, :guestName, :isPaid, :paidAt)
@@ -94,6 +98,7 @@ public class SplitRepositoryImpl implements SplitRepository {
                     participantIdMap.put(friend, participantId);
                 }
 
+                // insert into item_shares table
                 jdbcClient.sql("""
                             INSERT INTO item_shares (bill_item_id, participant_id, quantity_share)
                             VALUES (:billItemId, :participantId, :quantityShare)

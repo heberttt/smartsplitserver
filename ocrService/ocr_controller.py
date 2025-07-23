@@ -14,13 +14,8 @@ ocr = PaddleOCR(
     use_doc_unwarping=False,
     use_textline_orientation=False)
 
-# @app.get("/hello")
-# def hello():
-#     return "hello world"
-
-
 @app.post("/api/ocr/scan")
-def scan(request : OcrRequest):  # add async?
+def scan(request : OcrRequest):
     response = requests.get(request.image_link)
     if response.status_code != 200:
         raise Exception("Failed to download image")
