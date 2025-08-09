@@ -55,7 +55,14 @@ public class TransformDataResultConverter {
 
 
         TransformDataDO result = new TransformDataDO();
-        result.setTitle(ocrJson.get("title").toString());
+
+        String title = ocrJson.get("title").toString();
+
+        if (title.startsWith("\"") && title.endsWith("\"") && title.length() >= 2){
+            title = title.substring(1, title.length() - 1);
+        }
+
+        result.setTitle(title);
         result.setItems(items);
         result.setPrices(prices);
         result.setQuantity(quantity);
